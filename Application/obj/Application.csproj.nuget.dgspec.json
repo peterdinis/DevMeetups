@@ -26,7 +26,138 @@
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
+            "projectReferences": {
+              "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Domain/Domain.csproj": {
+                "projectPath": "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Domain/Domain.csproj"
+              },
+              "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Persistence/Persistence.csproj": {
+                "projectPath": "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Persistence/Persistence.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/9.0.110/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Domain/Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Domain/Domain.csproj",
+        "projectName": "Domain",
+        "projectPath": "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Domain/Domain.csproj",
+        "packagesPath": "/home/peterdinis/.nuget/packages/",
+        "outputPath": "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Domain/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/peterdinis/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/lib/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
             "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/9.0.110/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Persistence/Persistence.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Persistence/Persistence.csproj",
+        "projectName": "Persistence",
+        "projectPath": "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Persistence/Persistence.csproj",
+        "packagesPath": "/home/peterdinis/.nuget/packages/",
+        "outputPath": "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Persistence/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/peterdinis/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "/usr/lib/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Domain/Domain.csproj": {
+                "projectPath": "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Domain/Domain.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
