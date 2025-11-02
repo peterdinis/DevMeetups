@@ -29,6 +29,9 @@
             "projectReferences": {
               "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Application/Application.csproj": {
                 "projectPath": "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Application/Application.csproj"
+              },
+              "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Persistence/Persistence.csproj": {
+                "projectPath": "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Persistence/Persistence.csproj"
               }
             }
           }
@@ -263,6 +266,10 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "target": "Package",
+              "version": "[9.0.10, )"
+            },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
               "version": "[9.0.10, )"

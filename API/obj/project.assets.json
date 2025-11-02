@@ -1148,6 +1148,7 @@
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
           "Domain": "1.0.0",
+          "Microsoft.EntityFrameworkCore.Design": "9.0.10",
           "Microsoft.EntityFrameworkCore.Sqlite": "9.0.10"
         },
         "compile": {
@@ -3199,7 +3200,8 @@
     "net9.0": [
       "Application >= 1.0.0",
       "Microsoft.AspNetCore.OpenApi >= 9.0.9",
-      "Microsoft.EntityFrameworkCore.Sqlite >= 9.0.10"
+      "Microsoft.EntityFrameworkCore.Sqlite >= 9.0.10",
+      "Persistence >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -3230,6 +3232,9 @@
           "projectReferences": {
             "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Application/Application.csproj": {
               "projectPath": "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Application/Application.csproj"
+            },
+            "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Persistence/Persistence.csproj": {
+              "projectPath": "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Persistence/Persistence.csproj"
             }
           }
         }
