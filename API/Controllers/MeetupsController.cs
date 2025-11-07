@@ -1,11 +1,10 @@
 using Domain;
 using Microsoft.AspNetCore.Mvc;
-using Persistence;
 using Application.Meetups.Queries;
 
 namespace API.Controllers;
 
-public class MeetupsController(AppDbContext context) : BaseApiController
+public class MeetupsController : BaseApiController
 {
     [HttpGet]
     public async Task<ActionResult<List<Meetup>>> GetMeetups()
@@ -16,10 +15,6 @@ public class MeetupsController(AppDbContext context) : BaseApiController
     [HttpGet("{id}")]
     public async Task<ActionResult<Meetup>> GetMeetupDetail(string id)
     {
-        var Meetup = await context.Meetups.FindAsync(id);
-
-        if (Meetup == null) return NotFound();
-
-        return Meetup;
+        return await Mediator.Send(new GetMeetupDetails.Query{Id = id});
     }
 }
