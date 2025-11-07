@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "vtNXhi9iDyM=",
+  "dgSpecHash": "ujbdMABlbls=",
   "success": true,
   "projectFilePath": "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Application/Application.csproj",
   "expectedPackageFiles": [
+    "/home/peterdinis/.nuget/packages/automapper/15.1.0/automapper.15.1.0.nupkg.sha512",
     "/home/peterdinis/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/home/peterdinis/.nuget/packages/mediatr/13.1.0/mediatr.13.1.0.nupkg.sha512",
     "/home/peterdinis/.nuget/packages/mediatr.contracts/2.0.1/mediatr.contracts.2.0.1.nupkg.sha512",

@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Application.Meetups.Queries;
+using Application.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,10 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddCors();
+builder.Services.AddMediatR(x =>
+    x.RegisterServicesFromAssemblyContaining<GetMeetupList.Handler>());
+builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 
 var app = builder.Build();
 
