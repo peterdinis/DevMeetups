@@ -1,7 +1,7 @@
 using Domain;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Application.Meetups.Queries;
 
 namespace API.Controllers;
 
@@ -10,7 +10,7 @@ public class MeetupsController(AppDbContext context) : BaseApiController
     [HttpGet]
     public async Task<ActionResult<List<Meetup>>> GetMeetups()
     {
-        return await context.Meetups.ToListAsync();
+         return await Mediator.Send(new GetMeetupList.Query());
     }
 
     [HttpGet("{id}")]
