@@ -1,26 +1,24 @@
-using AutoMapper;
-using Domain;
 using MediatR;
 using Persistence;
 
 namespace Application.Meetups.Commands;
 
-public class EditMeetup
+public class DeleteMeetup
 {
     public class Command : IRequest
     {
-        public required Meetup Meetup { get; set; }
+        public required string Id { get; set; }
     }
 
-    public class Handler(AppDbContext context, IMapper mapper) : IRequestHandler<Command>
+    public class Handler(AppDbContext context) : IRequestHandler<Command>
     {
         public async Task Handle(Command request, CancellationToken cancellationToken)
         {
             var meetup = await context.Meetups
-                .FindAsync([request.Meetup.Id], cancellationToken) 
+                .FindAsync([request.Id], cancellationToken) 
                     ?? throw new Exception("Cannot find meetup");
 
-            mapper.Map(request.Meetup, meetup);
+            context.Remove(meetup);
 
             await context.SaveChangesAsync(cancellationToken);
         }
