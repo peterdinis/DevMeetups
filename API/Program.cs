@@ -17,9 +17,9 @@ builder.Services.AddCors();
 
 // Register your application services manually
 builder.Services.AddScoped<Application.Meetups.Commands.CreateMeetupHandler>();
-builder.Services.AddScoped<Application.Meetups.Commands.DeleteMeetupHandler>();
+builder.Services.AddScoped<Application.Meetups.Commands.DeleteMeetupService>();
 builder.Services.AddScoped<Application.Meetups.Commands.EditMeetupHandler>();
-builder.Services.AddScoped<Application.Meetups.Queries.GetMeetupDetailsHandler>();
+builder.Services.AddScoped<Application.Meetups.Queries.GetMeetupDetailsService>();
 builder.Services.AddScoped<Application.Meetups.Queries.GetMeetupListHandler>();
 
 // Configure Mapster
