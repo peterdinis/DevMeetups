@@ -1,12 +1,13 @@
-using AutoMapper;
+using Mapster;
 using Domain;
 
-namespace Application.Core;
-
-public class MappingProfiles : Profile
+namespace Application.Core
 {
-    public MappingProfiles()
+    public static class MappingConfig
     {
-        CreateMap<Meetup, Meetup>();
+        public static void RegisterMappings()
+        {
+            TypeAdapterConfig<Meetup, Meetup>.NewConfig();
+        }
     }
 }
