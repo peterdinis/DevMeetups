@@ -20,6 +20,37 @@
           }
         }
       },
+      "DispatchR/1.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net7.0/DispatchR.dll": {}
+        },
+        "runtime": {
+          "lib/net7.0/DispatchR.dll": {}
+        }
+      },
+      "DispatchR.Mediator/2.1.1": {
+        "type": "package",
+        "dependencies": {
+          "DispatchR.Mediator.Abstractions": "2.1.1",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.6"
+        },
+        "compile": {
+          "lib/net9.0/DispatchR.dll": {}
+        },
+        "runtime": {
+          "lib/net9.0/DispatchR.dll": {}
+        }
+      },
+      "DispatchR.Mediator.Abstractions/2.1.1": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0/DispatchR.Abstractions.dll": {}
+        },
+        "runtime": {
+          "lib/net9.0/DispatchR.Abstractions.dll": {}
+        }
+      },
       "Humanizer.Core/2.14.1": {
         "type": "package",
         "compile": {
@@ -1279,6 +1310,53 @@
         "lib/net9.0/AutoMapper.xml",
         "lib/netstandard2.0/AutoMapper.dll",
         "lib/netstandard2.0/AutoMapper.xml"
+      ]
+    },
+    "DispatchR/1.0.1": {
+      "sha512": "Bsh19HCdz8xLzbJLQsQtqAfjHjYWFC4sRLmCrU63nOtDdO7jaFg2uoE8MmfQhiW3hQJy7vQ5z2E2WhuZAvnITQ==",
+      "type": "package",
+      "path": "dispatchr/1.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "README.md",
+        "dispatchr.1.0.1.nupkg.sha512",
+        "dispatchr.nuspec",
+        "lib/net5.0/DispatchR.dll",
+        "lib/net6.0/DispatchR.dll",
+        "lib/net7.0/DispatchR.dll",
+        "lib/netstandard2.1/DispatchR.dll"
+      ]
+    },
+    "DispatchR.Mediator/2.1.1": {
+      "sha512": "3A3sGuNPBgtX2Fhn9OxwPrISItl8NlgQio4I33qdlFclrU9T31NrRrHrPY+vDekZ1b8vk5boO0UjZ/SM2LBHmQ==",
+      "type": "package",
+      "path": "dispatchr.mediator/2.1.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "dispatchr.mediator.2.1.1.nupkg.sha512",
+        "dispatchr.mediator.nuspec",
+        "icon-mini.png",
+        "lib/net8.0/DispatchR.dll",
+        "lib/net9.0/DispatchR.dll"
+      ]
+    },
+    "DispatchR.Mediator.Abstractions/2.1.1": {
+      "sha512": "GgoB6ZQ6gw0/QoX1FQKxXnuLq9X7hVMGgQFnmi9JSxp2S9uddMBqL3GwqcalyY2ntYlBtv7SPMBippHvmpht8w==",
+      "type": "package",
+      "path": "dispatchr.mediator.abstractions/2.1.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "dispatchr.mediator.abstractions.2.1.1.nupkg.sha512",
+        "dispatchr.mediator.abstractions.nuspec",
+        "icon-mini.png",
+        "lib/net8.0/DispatchR.Abstractions.dll",
+        "lib/net9.0/DispatchR.Abstractions.dll"
       ]
     },
     "Humanizer.Core/2.14.1": {
@@ -3457,6 +3535,9 @@
   "projectFileDependencyGroups": {
     "net9.0": [
       "AutoMapper >= 15.1.0",
+      "DispatchR >= 1.0.1",
+      "DispatchR.Mediator >= 2.1.1",
+      "DispatchR.Mediator.Abstractions >= 2.1.1",
       "Domain >= 1.0.0",
       "Mapster >= 7.4.2-pre02",
       "Mapster.DependencyInjection >= 1.0.3-pre02",
@@ -3518,6 +3599,18 @@
           "AutoMapper": {
             "target": "Package",
             "version": "[15.1.0, )"
+          },
+          "DispatchR": {
+            "target": "Package",
+            "version": "[1.0.1, )"
+          },
+          "DispatchR.Mediator": {
+            "target": "Package",
+            "version": "[2.1.1, )"
+          },
+          "DispatchR.Mediator.Abstractions": {
+            "target": "Package",
+            "version": "[2.1.1, )"
           },
           "Mapster": {
             "target": "Package",

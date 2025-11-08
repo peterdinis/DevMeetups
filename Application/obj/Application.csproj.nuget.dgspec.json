@@ -56,6 +56,18 @@
               "target": "Package",
               "version": "[15.1.0, )"
             },
+            "DispatchR": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
+            "DispatchR.Mediator": {
+              "target": "Package",
+              "version": "[2.1.1, )"
+            },
+            "DispatchR.Mediator.Abstractions": {
+              "target": "Package",
+              "version": "[2.1.1, )"
+            },
             "Mapster": {
               "target": "Package",
               "version": "[7.4.2-pre02, )"

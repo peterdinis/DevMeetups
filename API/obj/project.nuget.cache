@@ -1,10 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "0AuMX/A3GFQ=",
+  "dgSpecHash": "/yenqL8UpEE=",
   "success": true,
   "projectFilePath": "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/API.csproj",
   "expectedPackageFiles": [
     "/home/peterdinis/.nuget/packages/automapper/15.1.0/automapper.15.1.0.nupkg.sha512",
+    "/home/peterdinis/.nuget/packages/dispatchr/1.0.1/dispatchr.1.0.1.nupkg.sha512",
+    "/home/peterdinis/.nuget/packages/dispatchr.mediator/2.1.1/dispatchr.mediator.2.1.1.nupkg.sha512",
+    "/home/peterdinis/.nuget/packages/dispatchr.mediator.abstractions/2.1.1/dispatchr.mediator.abstractions.2.1.1.nupkg.sha512",
     "/home/peterdinis/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/home/peterdinis/.nuget/packages/mapster/7.4.2-pre02/mapster.7.4.2-pre02.nupkg.sha512",
     "/home/peterdinis/.nuget/packages/mapster.core/1.2.3-pre02/mapster.core.1.2.3-pre02.nupkg.sha512",
