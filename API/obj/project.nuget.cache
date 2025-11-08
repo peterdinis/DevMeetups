@@ -1,11 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "+hCJrNruvDQ=",
+  "dgSpecHash": "TeOpk/j+orI=",
   "success": true,
   "projectFilePath": "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/API.csproj",
   "expectedPackageFiles": [
     "/home/peterdinis/.nuget/packages/automapper/15.1.0/automapper.15.1.0.nupkg.sha512",
-    "/home/peterdinis/.nuget/packages/automapper.extensions.microsoft.dependencyinjection/12.0.1/automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "/home/peterdinis/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/home/peterdinis/.nuget/packages/mediatr/13.1.0/mediatr.13.1.0.nupkg.sha512",
     "/home/peterdinis/.nuget/packages/mediatr.contracts/2.0.1/mediatr.contracts.2.0.1.nupkg.sha512",
@@ -62,16 +61,5 @@
     "/home/peterdinis/.nuget/packages/system.text.json/9.0.10/system.text.json.9.0.10.nupkg.sha512",
     "/home/peterdinis/.nuget/packages/system.threading.channels/7.0.0/system.threading.channels.7.0.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1608",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Detected package version outside of dependency constraint: AutoMapper.Extensions.Microsoft.DependencyInjection 12.0.1 requires AutoMapper (= 12.0.1) but version AutoMapper 15.1.0 was resolved.",
-      "libraryId": "AutoMapper",
-      "targetGraphs": [
-        "net9.0"
-      ]
-    }
-  ]
+  "logs": []
 }
