@@ -1,21 +1,18 @@
 using Domain;
-using MediatR;
 using Persistence;
+using System;
 
-namespace Application.Meetups.Queries;
-
-public class GetMeetupDetails
+namespace Application.Meetups.Queries
 {
-    public class Query : IRequest<Meetup>
+    public class GetMeetupDetailsService(AppDbContext context)
     {
-        public required string Id { get; set; }
-    }
+        private readonly AppDbContext _context = context;
 
-    public class Handler(AppDbContext context) : IRequestHandler<Query, Meetup>
-    {
-        public async Task<Meetup> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<Meetup> GetMeetupByIdAsync(string id, CancellationToken cancellationToken = default)
         {
-            var meetup = await context.Meetups.FindAsync([request.Id], cancellationToken) ?? throw new Exception("Meetup not found");
+            var meetup = await _context.Meetups.FindAsync([id], cancellationToken) 
+                ?? throw new Exception($"Meetup with ID {id} not found");
+            
             return meetup;
         }
     }

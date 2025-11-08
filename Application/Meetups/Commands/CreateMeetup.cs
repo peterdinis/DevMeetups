@@ -1,21 +1,20 @@
-using DispatchR.Mediator.Abstractions;
 using Domain;
 using Persistence;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Application.Meetups
+namespace Application.Meetups.Commands
 {
-    // Namiesto celého Meetup objektu by malo ísť o DTO s potrebnými údajmi
     public record CreateMeetupCommand(
         string Title,
         string Description,
-        DateTime StartDate,
-        DateTime EndDate,
-        string Location) : IRequest<string>;
+        DateTime Date,
+        string Category,
+        string City,
+        string Venue,
+        double Latitude = 0,
+        double Longitude = 0
+    );
 
-    public class CreateMeetupHandler : IRequestHandler<CreateMeetupCommand, string>
+    public class CreateMeetupHandler
     {
         private readonly AppDbContext _context;
 
@@ -24,25 +23,37 @@ namespace Application.Meetups
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<string> Handle(CreateMeetupCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(CreateMeetupCommand request, CancellationToken cancellationToken = default)
         {
-            // Validácia vstupu
+            // Input validation
             if (string.IsNullOrWhiteSpace(request.Title))
                 throw new ArgumentException("Title is required", nameof(request.Title));
 
-            if (request.StartDate >= request.EndDate)
-                throw new ArgumentException("Start date must be before end date");
+            if (string.IsNullOrWhiteSpace(request.Description))
+                throw new ArgumentException("Description is required", nameof(request.Description));
 
-            // Vytvorenie Meetup entity v handleri
+            if (string.IsNullOrWhiteSpace(request.Category))
+                throw new ArgumentException("Category is required", nameof(request.Category));
+
+            if (string.IsNullOrWhiteSpace(request.City))
+                throw new ArgumentException("City is required", nameof(request.City));
+
+            if (string.IsNullOrWhiteSpace(request.Venue))
+                throw new ArgumentException("Venue is required", nameof(request.Venue));
+
+            // Create Meetup entity with all required properties
             var meetup = new Meetup
             {
-                Id = Guid.NewGuid().ToString(), // alebo iný spôsob generovania ID
+                // Id is auto-generated in the domain model
                 Title = request.Title,
                 Description = request.Description,
-                StartDate = request.StartDate,
-                EndDate = request.EndDate,
-                Location = request.Location,
-                CreatedAt = DateTime.UtcNow
+                Date = request.Date,
+                Category = request.Category,
+                City = request.City,
+                Venue = request.Venue,
+                Latitude = request.Latitude,
+                Longitude = request.Longitude,
+                IsCancelled = false
             };
 
             _context.Meetups.Add(meetup);

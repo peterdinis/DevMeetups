@@ -1,26 +1,19 @@
-using MediatR;
 using Persistence;
 
-namespace Application.Meetups.Commands;
-
-public class DeleteMeetup
+namespace Application.Meetups.Commands
 {
-    public class Command : IRequest
+    public class DeleteMeetupService(AppDbContext context)
     {
-        public required string Id { get; set; }
-    }
+        private readonly AppDbContext _context = context;
 
-    public class Handler(AppDbContext context) : IRequestHandler<Command>
-    {
-        public async Task Handle(Command request, CancellationToken cancellationToken)
+        public async Task DeleteMeetupAsync(string id, CancellationToken cancellationToken = default)
         {
-            var meetup = await context.Meetups
-                .FindAsync([request.Id], cancellationToken) 
-                    ?? throw new Exception("Cannot find meetup");
+            var meetup = await _context.Meetups
+                .FindAsync([id], cancellationToken) 
+                    ?? throw new Exception($"Meetup with ID {id} not found");
 
-            context.Remove(meetup);
-
-            await context.SaveChangesAsync(cancellationToken);
+            _context.Meetups.Remove(meetup);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

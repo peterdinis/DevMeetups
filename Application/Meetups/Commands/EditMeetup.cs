@@ -1,28 +1,35 @@
-using AutoMapper;
 using Domain;
-using MediatR;
 using Persistence;
 
-namespace Application.Meetups.Commands;
-
-public class EditMeetup
+namespace Application.Meetups.Commands
 {
-    public class Command : IRequest
+    public class EditMeetupCommand
     {
         public required Meetup Meetup { get; set; }
     }
 
-    public class Handler(AppDbContext context, IMapper mapper) : IRequestHandler<Command>
+    public class EditMeetupHandler(AppDbContext context)
     {
-        public async Task Handle(Command request, CancellationToken cancellationToken)
+        private readonly AppDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
+
+        public async Task Handle(EditMeetupCommand request, CancellationToken cancellationToken = default)
         {
-            var meetup = await context.Meetups
+            var meetup = await _context.Meetups
                 .FindAsync([request.Meetup.Id], cancellationToken) 
                     ?? throw new Exception("Cannot find meetup");
 
-            mapper.Map(request.Meetup, meetup);
+            // Manual mapping of properties
+            meetup.Title = request.Meetup.Title;
+            meetup.Description = request.Meetup.Description;
+            meetup.Date = request.Meetup.Date;
+            meetup.Category = request.Meetup.Category;
+            meetup.City = request.Meetup.City;
+            meetup.Venue = request.Meetup.Venue;
+            meetup.Latitude = request.Meetup.Latitude;
+            meetup.Longitude = request.Meetup.Longitude;
+            // IsCancelled is intentionally not updated here to prevent accidental cancellation via edit
 
-            await context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }
