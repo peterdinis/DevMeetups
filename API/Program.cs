@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Persistence;
-using Application.Meetups.Queries;
-using Application.Core;
-using AutoMapper;
+using Mapster;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,20 +15,18 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 builder.Services.AddOpenApi();
 builder.Services.AddCors();
 
-builder.Services.AddMediatR(x =>
-    x.RegisterServicesFromAssemblyContaining<GetMeetupList.Handler>());
+// Register your application services manually
+builder.Services.AddScoped<Application.Meetups.Commands.CreateMeetupHandler>();
+builder.Services.AddScoped<Application.Meetups.Commands.DeleteMeetupHandler>();
+builder.Services.AddScoped<Application.Meetups.Commands.EditMeetupHandler>();
+builder.Services.AddScoped<Application.Meetups.Queries.GetMeetupDetailsHandler>();
+builder.Services.AddScoped<Application.Meetups.Queries.GetMeetupListHandler>();
 
-// Configure AutoMapper manually (compatible with AutoMapper 14+)
-builder.Services.AddSingleton<IMapper>(sp =>
-{
-    var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+// Configure Mapster
+builder.Services.AddMapster();
 
-    var configExpr = new MapperConfigurationExpression();
-    configExpr.AddProfile<MappingProfiles>();
-
-    var config = new MapperConfiguration(configExpr, loggerFactory);
-    return new Mapper(config);
-});
+// Optional: Configure Mapster mappings if needed
+TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true);
 
 var app = builder.Build();
 
