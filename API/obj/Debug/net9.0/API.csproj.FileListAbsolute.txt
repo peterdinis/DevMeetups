@@ -161,10 +161,14 @@
 /home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/obj/Debug/net9.0/API.genruntimeconfig.cache
 /home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/obj/Debug/net9.0/ref/API.dll
 /home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/AutoMapper.dll
-/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 /home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/MediatR.dll
 /home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/MediatR.Contracts.dll
 /home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Microsoft.IdentityModel.Abstractions.dll
 /home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Microsoft.IdentityModel.JsonWebTokens.dll
 /home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Microsoft.IdentityModel.Logging.dll
 /home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Microsoft.IdentityModel.Tokens.dll
+/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/DispatchR.dll
+/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/DispatchR.Abstractions.dll
+/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Mapster.dll
+/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Mapster.Core.dll
+/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Mapster.DependencyInjection.dll
