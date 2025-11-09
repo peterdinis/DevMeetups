@@ -9,14 +9,9 @@ namespace Application.Meetups.Commands
         public required Meetup Meetup { get; set; }
     }
 
-    public class EditMeetupHandler
+    public class EditMeetupHandler(AppDbContext context)
     {
-        private readonly AppDbContext _context;
-
-        public EditMeetupHandler(AppDbContext context)
-        {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-        }
+        private readonly AppDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
         public async Task Handle(EditMeetupCommand request, CancellationToken cancellationToken = default)
         {
