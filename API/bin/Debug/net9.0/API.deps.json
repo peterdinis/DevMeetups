@@ -10,7 +10,11 @@
         "dependencies": {
           "Application": "1.0.0",
           "AutoMapper": "15.1.0",
-          "AutoMapper.Extensions.Microsoft.DependencyInjection": "12.0.1",
+          "DispatchR": "1.0.1",
+          "DispatchR.Mediator": "2.1.1",
+          "DispatchR.Mediator.Abstractions": "2.1.1",
+          "Mapster": "7.4.2-pre02",
+          "Mapster.DependencyInjection": "1.0.3-pre02",
           "Microsoft.AspNetCore.OpenApi": "9.0.9",
           "Microsoft.EntityFrameworkCore.Sqlite": "9.0.10",
           "Persistence": "1.0.0"
@@ -32,15 +36,25 @@
           }
         }
       },
-      "AutoMapper.Extensions.Microsoft.DependencyInjection/12.0.1": {
-        "dependencies": {
-          "AutoMapper": "15.1.0",
-          "Microsoft.Extensions.Options": "9.0.10"
-        },
+      "DispatchR/1.0.1": {
         "runtime": {
-          "lib/netstandard2.1/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {
-            "assemblyVersion": "12.0.0.0",
-            "fileVersion": "12.0.1.0"
+          "lib/net7.0/DispatchR.dll": {
+            "assemblyVersion": "1.0.1.0",
+            "fileVersion": "1.0.1.0"
+          }
+        }
+      },
+      "DispatchR.Mediator/2.1.1": {
+        "dependencies": {
+          "DispatchR.Mediator.Abstractions": "2.1.1",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.10"
+        }
+      },
+      "DispatchR.Mediator.Abstractions/2.1.1": {
+        "runtime": {
+          "lib/net9.0/DispatchR.Abstractions.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       },
@@ -49,6 +63,37 @@
           "lib/net6.0/Humanizer.dll": {
             "assemblyVersion": "2.14.0.0",
             "fileVersion": "2.14.1.48190"
+          }
+        }
+      },
+      "Mapster/7.4.2-pre02": {
+        "dependencies": {
+          "Mapster.Core": "1.2.3-pre02"
+        },
+        "runtime": {
+          "lib/net9.0/Mapster.dll": {
+            "assemblyVersion": "7.4.2.0",
+            "fileVersion": "7.4.2.0"
+          }
+        }
+      },
+      "Mapster.Core/1.2.3-pre02": {
+        "runtime": {
+          "lib/net9.0/Mapster.Core.dll": {
+            "assemblyVersion": "1.2.3.0",
+            "fileVersion": "1.2.3.0"
+          }
+        }
+      },
+      "Mapster.DependencyInjection/1.0.3-pre02": {
+        "dependencies": {
+          "Mapster": "7.4.2-pre02",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.10"
+        },
+        "runtime": {
+          "lib/net9.0/Mapster.DependencyInjection.dll": {
+            "assemblyVersion": "1.0.3.0",
+            "fileVersion": "1.0.3.0"
           }
         }
       },
@@ -883,7 +928,12 @@
       "Application/1.0.0": {
         "dependencies": {
           "AutoMapper": "15.1.0",
+          "DispatchR": "1.0.1",
+          "DispatchR.Mediator": "2.1.1",
+          "DispatchR.Mediator.Abstractions": "2.1.1",
           "Domain": "1.0.0",
+          "Mapster": "7.4.2-pre02",
+          "Mapster.DependencyInjection": "1.0.3-pre02",
           "MediatR": "13.1.0",
           "Persistence": "1.0.0"
         },
@@ -934,12 +984,26 @@
       "path": "automapper/15.1.0",
       "hashPath": "automapper.15.1.0.nupkg.sha512"
     },
-    "AutoMapper.Extensions.Microsoft.DependencyInjection/12.0.1": {
+    "DispatchR/1.0.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-+g/K+Vpe3gGMKGzjslMOdqNlkikScDjWfVvmWTayrDHaG/n2pPmFBMa+jKX1r/h6BDGFdkyRjAuhFE3ykW+r1g==",
-      "path": "automapper.extensions.microsoft.dependencyinjection/12.0.1",
-      "hashPath": "automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512"
+      "sha512": "sha512-Bsh19HCdz8xLzbJLQsQtqAfjHjYWFC4sRLmCrU63nOtDdO7jaFg2uoE8MmfQhiW3hQJy7vQ5z2E2WhuZAvnITQ==",
+      "path": "dispatchr/1.0.1",
+      "hashPath": "dispatchr.1.0.1.nupkg.sha512"
+    },
+    "DispatchR.Mediator/2.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3A3sGuNPBgtX2Fhn9OxwPrISItl8NlgQio4I33qdlFclrU9T31NrRrHrPY+vDekZ1b8vk5boO0UjZ/SM2LBHmQ==",
+      "path": "dispatchr.mediator/2.1.1",
+      "hashPath": "dispatchr.mediator.2.1.1.nupkg.sha512"
+    },
+    "DispatchR.Mediator.Abstractions/2.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-GgoB6ZQ6gw0/QoX1FQKxXnuLq9X7hVMGgQFnmi9JSxp2S9uddMBqL3GwqcalyY2ntYlBtv7SPMBippHvmpht8w==",
+      "path": "dispatchr.mediator.abstractions/2.1.1",
+      "hashPath": "dispatchr.mediator.abstractions.2.1.1.nupkg.sha512"
     },
     "Humanizer.Core/2.14.1": {
       "type": "package",
@@ -947,6 +1011,27 @@
       "sha512": "sha512-lQKvtaTDOXnoVJ20ibTuSIOf2i0uO0MPbDhd1jm238I+U/2ZnRENj0cktKZhtchBMtCUSRQ5v4xBCUbKNmyVMw==",
       "path": "humanizer.core/2.14.1",
       "hashPath": "humanizer.core.2.14.1.nupkg.sha512"
+    },
+    "Mapster/7.4.2-pre02": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ry6YPGImX4aL0+Jj0rn46vqYOxzeyKOdlr6LUPvby1NLc68E5T2gRhDVWxvFexgZGOIW/U8NM87kygE4xl7Qvw==",
+      "path": "mapster/7.4.2-pre02",
+      "hashPath": "mapster.7.4.2-pre02.nupkg.sha512"
+    },
+    "Mapster.Core/1.2.3-pre02": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FDVPfGvCz1RRb1PYeoddiJftxo+ANAifiaqkZbH2kijZT2GcoR1w6byLQ8Czc9YBuNZqHHV4LKeXZA+eoFuCTw==",
+      "path": "mapster.core/1.2.3-pre02",
+      "hashPath": "mapster.core.1.2.3-pre02.nupkg.sha512"
+    },
+    "Mapster.DependencyInjection/1.0.3-pre02": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1iB5RtdPRuH30kVdgDLdF5nCSE13juyiz9r3WL5ASE/q+FSyLUQtsOTKx6wSObAIxz+AmHV6dgNkzkTOcFwNtQ==",
+      "path": "mapster.dependencyinjection/1.0.3-pre02",
+      "hashPath": "mapster.dependencyinjection.1.0.3-pre02.nupkg.sha512"
     },
     "MediatR/13.1.0": {
       "type": "package",

@@ -3,41 +3,100 @@ using Microsoft.AspNetCore.Mvc;
 using Application.Meetups.Queries;
 using Application.Meetups.Commands;
 
-namespace API.Controllers;
-
-public class MeetupsController : BaseApiController
+namespace API.Controllers
 {
-    [HttpGet]
-    public async Task<ActionResult<List<Meetup>>> GetMeetups()
+    [ApiController]
+    [Route("api/[controller]")]
+    public class MeetupsController(
+        GetMeetupListHandler getMeetupListHandler,
+        GetMeetupDetailsHandler getMeetupDetailsHandler,
+        CreateMeetupHandler createMeetupHandler,
+        EditMeetupHandler editMeetupHandler,
+        DeleteMeetupHandler deleteMeetupHandler) : ControllerBase
     {
-        return await Mediator.Send(new GetMeetupList.Query());
-    }
+        private readonly GetMeetupListHandler _getMeetupListHandler = getMeetupListHandler;
+        private readonly GetMeetupDetailsHandler _getMeetupDetailsHandler = getMeetupDetailsHandler;
+        private readonly CreateMeetupHandler _createMeetupHandler = createMeetupHandler;
+        private readonly EditMeetupHandler _editMeetupHandler = editMeetupHandler;
+        private readonly DeleteMeetupHandler _deleteMeetupHandler = deleteMeetupHandler;
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Meetup>> GetMeetupDetail(string id)
-    {
-        return await Mediator.Send(new GetMeetupDetails.Query { Id = id });
-    }
+        [HttpGet]
+        public async Task<ActionResult<List<Meetup>>> GetMeetups()
+        {
+            var query = new GetMeetupListQuery();
+            var meetups = await _getMeetupListHandler.Handle(query);
+            return Ok(meetups);
+        }
 
-    [HttpPost]
-    public async Task<ActionResult<string>> CreateMeetup(Meetup meetup)
-    {
-        return await Mediator.Send(new CreateMeetup.Command { Meetup = meetup });
-    }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Meetup>> GetMeetupDetail(string id)
+        {
+            try
+            {
+                var query = new GetMeetupDetailsQuery { Id = id };
+                var meetup = await _getMeetupDetailsHandler.Handle(query);
+                return Ok(meetup);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-    [HttpPut]
-    public async Task<ActionResult> EditMeetup(Meetup meetup)
-    {
-        await Mediator.Send(new EditMeetup.Command { Meetup = meetup });
+        [HttpPost]
+        public async Task<ActionResult<string>> CreateMeetup([FromBody] CreateMeetupCommand command)
+        {
+            try
+            {
+                var meetupId = await _createMeetupHandler.Handle(command);
+                return CreatedAtAction(nameof(GetMeetupDetail), new { id = meetupId }, new { id = meetupId });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        return NoContent();
-    }
+        [HttpPut("{id}")]
+        public async Task<ActionResult> EditMeetup(string id, [FromBody] EditMeetupCommand command)
+        {
+            try
+            {
+                command.Id = id;
+                await _editMeetupHandler.Handle(command);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteMeetup(string id)
-    {
-        await Mediator.Send(new DeleteMeetup.Command { Id = id });
-
-        return Ok();
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteMeetup(string id)
+        {
+            try
+            {
+                var command = new DeleteMeetupCommand { Id = id };
+                await _deleteMeetupHandler.Handle(command);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

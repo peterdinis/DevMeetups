@@ -7,6 +7,11 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="15.1.0" />
+    <PackageReference Include="DispatchR" Version="1.0.1" />
+    <PackageReference Include="DispatchR.Mediator" Version="2.1.1" />
+    <PackageReference Include="DispatchR.Mediator.Abstractions" Version="2.1.1" />
+    <PackageReference Include="Mapster" Version="7.4.2-pre02" />
+    <PackageReference Include="Mapster.DependencyInjection" Version="1.0.3-pre02" />
     <PackageReference Include="MediatR" Version="13.1.0" />
   </ItemGroup>
 
