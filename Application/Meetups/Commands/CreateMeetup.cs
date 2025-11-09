@@ -14,14 +14,9 @@ namespace Application.Meetups.Commands
         double Longitude = 0
     );
 
-    public class CreateMeetupHandler
+    public class CreateMeetupHandler(AppDbContext context)
     {
-        private readonly AppDbContext _context;
-
-        public CreateMeetupHandler(AppDbContext context)
-        {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-        }
+        private readonly AppDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
         public async Task<string> Handle(CreateMeetupCommand request, CancellationToken cancellationToken = default)
         {
