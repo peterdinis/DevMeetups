@@ -1,19 +1,30 @@
 using Domain;
 using Persistence;
-using System;
 
 namespace Application.Meetups.Queries
 {
-    public class GetMeetupDetailsService(AppDbContext context)
+    public class GetMeetupDetailsHandler
     {
-        private readonly AppDbContext _context = context;
+        private readonly AppDbContext _context;
 
-        public async Task<Meetup> GetMeetupByIdAsync(string id, CancellationToken cancellationToken = default)
+        public GetMeetupDetailsHandler(AppDbContext context)
         {
-            var meetup = await _context.Meetups.FindAsync([id], cancellationToken) 
-                ?? throw new Exception($"Meetup with ID {id} not found");
-            
+            _context = context;
+        }
+
+        public async Task<Meetup> Handle(GetMeetupDetailsQuery query, CancellationToken cancellationToken = default)
+        {
+            var meetup = await _context.Meetups.FindAsync([query.Id], cancellationToken);
+
+            if (meetup is null)
+                throw new KeyNotFoundException($"Meetup with ID '{query.Id}' not found.");
+
             return meetup;
         }
+    }
+
+    public class GetMeetupDetailsQuery
+    {
+        public string Id { get; set; } = default!;
     }
 }
