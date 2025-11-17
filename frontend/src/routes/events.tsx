@@ -1,9 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
+import EventsWrapper from '../components/events/EventsWrapper'
 
 export const Route = createFileRoute('/events')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <div>Hello "/events"!</div>
+  return <EventsWrapper />
 }
