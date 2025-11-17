@@ -14,7 +14,7 @@ import {
   Badge,
   Tag,
 } from "@chakra-ui/react";
-import { SearchIcon, CalendarIcon, TimeIcon } from "@chakra-ui/icons";
+import { Search, Calendar, Clock, MapPin } from "lucide-react";
 import { useColorModeValue } from "../ui/color-mode";
 
 // Types
@@ -46,6 +46,7 @@ const EventsWrapper: FC = () => {
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const textColor = useColorModeValue("gray.600", "gray.300");
   const accentColor = useColorModeValue("blue.600", "blue.300");
+  const iconColor = useColorModeValue("gray.500", "gray.400");
 
   // Demo data
   const events: Event[] = [
@@ -268,15 +269,16 @@ const EventsWrapper: FC = () => {
             {/* Event Details */}
             <VStack gap="12px" align="start" width="100%">
               <HStack color={textColor} fontSize="sm">
-                <CalendarIcon color="gray.500" />
+                <Calendar size={16} color={iconColor} />
                 <Text fontWeight="500">{formatDate(event.date)}</Text>
                 <Text>•</Text>
-                <TimeIcon color="gray.500" />
+                <Clock size={16} color={iconColor} />
                 <Text>{event.time}</Text>
               </HStack>
               
               <HStack color={textColor} fontSize="sm">
-                <Text fontWeight="500">📍 {event.location}</Text>
+                <MapPin size={16} color={iconColor} />
+                <Text fontWeight="500">{event.location}</Text>
               </HStack>
             </VStack>
 
@@ -300,7 +302,6 @@ const EventsWrapper: FC = () => {
             {/* Footer */}
             <HStack justify="space-between" width="100%" pt="8px">
               <HStack>
-                
                 <Text fontSize="sm" color={textColor}>
                   {event.organizer.name}
                 </Text>
@@ -351,7 +352,7 @@ const EventsWrapper: FC = () => {
               {/* Search Bar */}
               <Box position="relative" maxW="600px">
                 <Box position="absolute" left="12px" top="50%" transform="translateY(-50%)" zIndex="1">
-                  <SearchIcon color="gray.400" />
+                  <Search size={20} color={iconColor} />
                 </Box>
                 <Input
                   placeholder="Search events by technology, topic, or location..."
