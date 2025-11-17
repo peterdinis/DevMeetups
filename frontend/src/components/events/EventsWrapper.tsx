@@ -16,7 +16,7 @@ import {
   Tag,
 } from "@chakra-ui/react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
-import { Search, Calendar, Clock, MapPin, Sparkles, Code, Globe, Heart, MessageCircle, Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, Calendar, Clock, MapPin, Sparkles, Code, Globe, Heart, MessageCircle, Star} from "lucide-react";
 import { useColorModeValue } from "../ui/color-mode";
 
 // Types
