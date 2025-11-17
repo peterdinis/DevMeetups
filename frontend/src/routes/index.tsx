@@ -1,13 +1,12 @@
 import { createRoute } from '@tanstack/react-router'
 import { rootRoute } from './__root'
-import { Button } from '@chakra-ui/react'
+import HomeWrapper from '../components/home/HomeWrapper'
 
 function Index() {
   return (
-    <div className="p-2">
-      <h3>Welcome Home!</h3>
-      <Button>TEST ME</Button>
-    </div>
+    <>
+      <HomeWrapper />
+    </>
   )
 }
 
