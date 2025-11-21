@@ -2,6 +2,7 @@ using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Application.Meetups.Queries;
 using Application.Meetups.Commands;
+using Application.Validators;
 
 namespace API.Controllers
 {
@@ -24,79 +25,86 @@ namespace API.Controllers
         public async Task<ActionResult<List<Meetup>>> GetMeetups()
         {
             var query = new GetMeetupListQuery();
-            var meetups = await _getMeetupListHandler.Handle(query);
-            return Ok(meetups);
+            var result = await _getMeetupListHandler.Handle(query);
+            
+            return HandleResult(result);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Meetup>> GetMeetupDetail(string id)
         {
-            try
-            {
-                var query = new GetMeetupDetailsQuery { Id = id };
-                var meetup = await _getMeetupDetailsHandler.Handle(query);
-                return Ok(meetup);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var query = new GetMeetupDetailsQuery { Id = id };
+            var result = await _getMeetupDetailsHandler.Handle(query);
+            
+            return HandleResult(result);
         }
 
         [HttpPost]
         public async Task<ActionResult<string>> CreateMeetup([FromBody] CreateMeetupCommand command)
         {
-            try
+            var result = await _createMeetupHandler.Handle(command);
+            
+            if (result.IsSuccess)
             {
-                var meetupId = await _createMeetupHandler.Handle(command);
-                return CreatedAtAction(nameof(GetMeetupDetail), new { id = meetupId }, new { id = meetupId });
+                return CreatedAtAction(nameof(GetMeetupDetail), new { id = result.Value }, new { id = result.Value });
             }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            
+            return HandleResult(result);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> EditMeetup(string id, [FromBody] EditMeetupCommand command)
         {
-            try
-            {
-                command.Id = id;
-                await _editMeetupHandler.Handle(command);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            command.Id = id;
+            var result = await _editMeetupHandler.Handle(command);
+            
+            return HandleResult(result);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteMeetup(string id)
         {
-            try
+            var command = new DeleteMeetupCommand { Id = id };
+            var result = await _deleteMeetupHandler.Handle(command);
+            
+            return HandleResult(result);
+        }
+
+        private ActionResult HandleResult(Result result)
+        {
+            if (result.IsSuccess)
             {
-                var command = new DeleteMeetupCommand { Id = id };
-                await _deleteMeetupHandler.Handle(command);
                 return NoContent();
             }
-            catch (KeyNotFoundException ex)
+
+            return MapErrorToActionResult(result.Error);
+        }
+
+        private ActionResult<T> HandleResult<T>(Result<T> result)
+        {
+            if (result.IsSuccess)
             {
-                return NotFound(ex.Message);
+                return Ok(result.Value);
             }
-            catch (Exception ex)
+
+            return MapErrorToActionResult<T>(result.Error);
+        }
+
+        private ActionResult MapErrorToActionResult(string error)
+        {
+            return error.ToLower() switch
             {
-                return BadRequest(ex.Message);
-            }
+                var e when e.Contains("not found") => NotFound(error),
+                var e when e.Contains("required") || e.Contains("invalid") || e.Contains("cannot exceed") => BadRequest(error),
+                var e when e.Contains("already occurred") || e.Contains("cancelled") || e.Contains("future") => BadRequest(error),
+                _ => StatusCode(500, "An internal server error occurred. Please try again later.")
+            };
+        }
+
+        private ActionResult<T> MapErrorToActionResult<T>(string error)
+        {
+            var actionResult = MapErrorToActionResult(error);
+            return actionResult as ActionResult<T> ?? new ObjectResult(error) { StatusCode = (actionResult as ObjectResult)?.StatusCode };
         }
     }
 }
