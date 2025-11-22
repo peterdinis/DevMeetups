@@ -1,10 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Mapster;
+using Domain;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(opt =>
+{
+    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    opt.Filters.Add(new Microsoft.AspNetCore.Mvc.Authorization.AuthorizeFilter(policy));
+});
 
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
@@ -14,6 +21,11 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 builder.Services.AddOpenApi();
 builder.Services.AddCors();
 
+builder.Services.AddIdentityApiEndpoints<User>(opt =>
+{
+    opt.User.RequireUniqueEmail = true;
+}).AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddScoped<Application.Meetups.Commands.CreateMeetupHandler>();
 builder.Services.AddScoped<Application.Meetups.Commands.DeleteMeetupHandler>();
@@ -35,6 +47,11 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
+
+app.MapGroup("api").MapIdentityApi<User>(); // api/login
 
 app.Run();

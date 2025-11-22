@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Application.Meetups.Queries;
 using Application.Meetups.Commands;
 using Application.Validators;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
@@ -21,6 +22,7 @@ namespace API.Controllers
         private readonly EditMeetupHandler _editMeetupHandler = editMeetupHandler;
         private readonly DeleteMeetupHandler _deleteMeetupHandler = deleteMeetupHandler;
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<List<Meetup>>> GetMeetups()
         {
@@ -30,6 +32,7 @@ namespace API.Controllers
             return HandleResult(result);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<Meetup>> GetMeetupDetail(string id)
         {
@@ -38,7 +41,8 @@ namespace API.Controllers
             
             return HandleResult(result);
         }
-
+        
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<string>> CreateMeetup([FromBody] CreateMeetupCommand command)
         {
@@ -52,6 +56,7 @@ namespace API.Controllers
             return HandleResult(result);
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult> EditMeetup(string id, [FromBody] EditMeetupCommand command)
         {
@@ -61,6 +66,7 @@ namespace API.Controllers
             return HandleResult(result);
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteMeetup(string id)
         {
