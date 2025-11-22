@@ -22,6 +22,7 @@ namespace API.Controllers
         private readonly EditMeetupHandler _editMeetupHandler = editMeetupHandler;
         private readonly DeleteMeetupHandler _deleteMeetupHandler = deleteMeetupHandler;
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<List<Meetup>>> GetMeetups()
         {
@@ -31,6 +32,7 @@ namespace API.Controllers
             return HandleResult(result);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<Meetup>> GetMeetupDetail(string id)
         {
