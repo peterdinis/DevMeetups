@@ -25,16 +25,16 @@ namespace Application.Meetups.Queries
                 if (!validationResult.IsValid)
                 {
                     _logger.LogWarning("Validation failed for get meetup details query: {Error}", validationResult.ErrorMessage);
-                    return (Result<Meetup>)Result<Meetup>.Failure(validationResult.ErrorMessage);
+                    return (Result<Meetup>)Result.Failure(validationResult.ErrorMessage);
                 }
 
                 // Find meetup
-                var meetup = await _context.Meetups.FindAsync(new object[] { query.Id }, cancellationToken);
+                var meetup = await _context.Meetups.FindAsync([query.Id], cancellationToken);
 
                 if (meetup is null)
                 {
                     _logger.LogWarning("Meetup with ID '{MeetupId}' not found", query.Id);
-                    return (Result<Meetup>)Result<Meetup>.Failure($"Meetup with ID '{query.Id}' not found.");
+                    return (Result<Meetup>)Result.Failure($"Meetup with ID '{query.Id}' not found.");
                 }
 
                 // Business validation - check if meetup is cancelled (optional, depending on requirements)

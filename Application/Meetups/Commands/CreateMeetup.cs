@@ -71,7 +71,7 @@ namespace Application.Meetups.Commands
             }
         }
 
-        private ValidationResult ValidateCommand(CreateMeetupCommand request)
+        private static ValidationResult ValidateCommand(CreateMeetupCommand request)
         {
             var errors = new List<string>();
 
@@ -110,13 +110,13 @@ namespace Application.Meetups.Commands
                 : ValidationResult.Valid();
         }
 
-        private bool IsValidCoordinates(double latitude, double longitude)
+        private static bool IsValidCoordinates(double latitude, double longitude)
         {
             return latitude >= -90 && latitude <= 90 && 
                    longitude >= -180 && longitude <= 180;
         }
 
-        private Meetup CreateMeetupEntity(CreateMeetupCommand request)
+        private static Meetup CreateMeetupEntity(CreateMeetupCommand request)
         {
             return new Meetup
             {

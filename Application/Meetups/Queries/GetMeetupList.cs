@@ -8,7 +8,6 @@ namespace Application.Meetups.Queries
 {
     public class GetMeetupListQuery
     {
-        // Optional: Add filtering parameters later
         public bool? IncludeCancelled { get; set; }
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
@@ -16,16 +15,10 @@ namespace Application.Meetups.Queries
         public string? City { get; set; }
     }
 
-    public class GetMeetupListHandler
+    public class GetMeetupListHandler(AppDbContext context, ILogger<GetMeetupListHandler> logger)
     {
-        private readonly AppDbContext _context;
-        private readonly ILogger<GetMeetupListHandler> _logger;
-
-        public GetMeetupListHandler(AppDbContext context, ILogger<GetMeetupListHandler> logger)
-        {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
+        private readonly AppDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
+        private readonly ILogger<GetMeetupListHandler> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
         public async Task<Result<List<Meetup>>> Handle(GetMeetupListQuery query, CancellationToken cancellationToken = default)
         {
@@ -46,7 +39,7 @@ namespace Application.Meetups.Queries
                 var meetups = await meetupsQuery.ToListAsync(cancellationToken);
 
                 _logger.LogInformation("Retrieved {MeetupCount} meetups from database", meetups.Count);
-                return Result<List<Meetup>>.Success(meetups);
+                return Result.Success(meetups);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
@@ -55,7 +48,7 @@ namespace Application.Meetups.Queries
             }
         }
 
-        private ValidationResult ValidateQuery(GetMeetupListQuery query)
+        private static ValidationResult ValidateQuery(GetMeetupListQuery query)
         {
             var errors = new List<string>();
 

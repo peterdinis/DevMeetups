@@ -22,7 +22,7 @@ namespace Application.Meetups.Commands
                 }
 
                 // Find meetup
-                var meetup = await _context.Meetups.FindAsync(new object[] { command.Id }, cancellationToken);
+                var meetup = await _context.Meetups.FindAsync([command.Id], cancellationToken);
 
                 if (meetup is null)
                 {
@@ -58,7 +58,7 @@ namespace Application.Meetups.Commands
             }
         }
 
-        private ValidationResult ValidateCommand(DeleteMeetupCommand command)
+        private static ValidationResult ValidateCommand(DeleteMeetupCommand command)
         {
             var errors = new List<string>();
 
@@ -71,7 +71,7 @@ namespace Application.Meetups.Commands
                 errors.Add("Invalid meetup ID format");
             }
 
-            return errors.Any() 
+            return errors.Count != 0
                 ? ValidationResult.Invalid(string.Join("; ", errors))
                 : ValidationResult.Valid();
         }
