@@ -83,6 +83,14 @@
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
               "version": "[9.0.10, )"
+            },
+            "Microsoft.Extensions.Http.Polly": {
+              "target": "Package",
+              "version": "[9.0.11, )"
+            },
+            "Polly": {
+              "target": "Package",
+              "version": "[8.6.5, )"
             }
           },
           "imports": [
@@ -183,6 +191,10 @@
             "MediatR": {
               "target": "Package",
               "version": "[13.1.0, )"
+            },
+            "Polly": {
+              "target": "Package",
+              "version": "[8.6.5, )"
             }
           },
           "imports": [

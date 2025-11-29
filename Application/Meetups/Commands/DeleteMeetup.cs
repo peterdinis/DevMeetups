@@ -1,7 +1,8 @@
 using Persistence;
 using Domain;
 using Microsoft.Extensions.Logging;
-using Application.Validators;
+using Polly;
+using Polly.Retry;
 
 namespace Application.Meetups.Commands
 {
@@ -9,11 +10,26 @@ namespace Application.Meetups.Commands
     {
         private readonly AppDbContext _context;
         private readonly ILogger<DeleteMeetupHandler> _logger;
+        private readonly AsyncRetryPolicy _retryPolicy;
 
         public DeleteMeetupHandler(AppDbContext context, ILogger<DeleteMeetupHandler> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            _retryPolicy = Policy
+                .Handle<Exception>()
+                .WaitAndRetryAsync(
+                    retryCount: 3,
+                    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                    onRetry: (exception, timeSpan, retryCount, context) =>
+                    {
+                        _logger.LogWarning(
+                            "Delete operation retry {RetryCount} after {Delay}ms due to: {ExceptionMessage}",
+                            retryCount,
+                            timeSpan.TotalMilliseconds,
+                            exception.Message);
+                    });
         }
 
         public async Task<Result> Handle(DeleteMeetupCommand command, CancellationToken cancellationToken = default)
@@ -28,8 +44,10 @@ namespace Application.Meetups.Commands
                     return Result.Failure(validationResult.ErrorMessage);
                 }
 
-                // Find meetup
-                var meetup = await _context.Meetups.FindAsync(new object[] { command.Id }, cancellationToken);
+                var meetup = await _retryPolicy.ExecuteAsync(async (ct) =>
+                {
+                    return await _context.Meetups.FindAsync(new object[] { command.Id }, ct);
+                }, cancellationToken);
 
                 if (meetup is null)
                 {
@@ -50,12 +68,16 @@ namespace Application.Meetups.Commands
                     _logger.LogWarning("Attempt to delete past meetup with ID '{MeetupId}'", command.Id);
                     return Result.Failure("Cannot delete meetups that have already occurred.");
                 }
+                
+                await _retryPolicy.ExecuteAsync(async (ct) =>
+                {
+                    _context.Meetups.Remove(meetup);
+                    await _context.SaveChangesAsync(ct);
+                    
+                    _logger.LogInformation("Meetup with ID '{MeetupId}' successfully deleted", command.Id);
+                    
+                }, cancellationToken);
 
-                // Execute deletion
-                _context.Meetups.Remove(meetup);
-                await _context.SaveChangesAsync(cancellationToken);
-
-                _logger.LogInformation("Meetup with ID '{MeetupId}' successfully deleted", command.Id);
                 return Result.Success();
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
@@ -78,7 +100,7 @@ namespace Application.Meetups.Commands
                 errors.Add("Invalid meetup ID format");
             }
 
-            return errors.Any() 
+            return errors.Count != 0
                 ? ValidationResult.Invalid(string.Join("; ", errors))
                 : ValidationResult.Valid();
         }

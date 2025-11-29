@@ -1,7 +1,7 @@
 using Domain;
 using Persistence;
 using Microsoft.Extensions.Logging;
-using Application.Validators;
+using Polly;
 
 namespace Application.Meetups.Commands
 {
@@ -20,11 +20,16 @@ namespace Application.Meetups.Commands
     {
         private readonly AppDbContext _context;
         private readonly ILogger<CreateMeetupHandler> _logger;
+        private readonly IAsyncPolicy _resiliencyPolicy; 
 
-        public CreateMeetupHandler(AppDbContext context, ILogger<CreateMeetupHandler> logger)
+        public CreateMeetupHandler(
+            AppDbContext context, 
+            ILogger<CreateMeetupHandler> logger,
+            IAsyncPolicy resiliencyPolicy)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _resiliencyPolicy = resiliencyPolicy ?? throw new ArgumentNullException(nameof(resiliencyPolicy));
         }
 
         public async Task<Result<string>> Handle(CreateMeetupCommand request, CancellationToken cancellationToken = default)
@@ -36,14 +41,14 @@ namespace Application.Meetups.Commands
                 if (!validationResult.IsValid)
                 {
                     _logger.LogWarning("Validation failed for create meetup command: {Error}", validationResult.ErrorMessage);
-                    return (Result<string>)Result<string>.Failure(validationResult.ErrorMessage);
+                    return (Result<string>)Result.Failure(validationResult.ErrorMessage);
                 }
 
                 // Business validation - ensure date is in the future
                 if (request.Date <= DateTime.UtcNow.AddHours(1))
                 {
                     _logger.LogWarning("Attempt to create meetup with invalid date: {Date}", request.Date);
-                    return (Result<string>)Result<string>.Failure("Meetup date must be at least 1 hour in the future");
+                    return (Result<string>)Result.Failure("Meetup date must be at least 1 hour in the future");
                 }
 
                 // Business validation - validate coordinates
@@ -51,23 +56,27 @@ namespace Application.Meetups.Commands
                 {
                     _logger.LogWarning("Attempt to create meetup with invalid coordinates: Lat {Latitude}, Long {Longitude}", 
                         request.Latitude, request.Longitude);
-                    return (Result<string>)Result<string>.Failure("Invalid coordinates provided");
+                    return (Result<string>)Result.Failure("Invalid coordinates provided");
                 }
 
                 // Create Meetup entity
                 var meetup = CreateMeetupEntity(request);
+                
+                await _resiliencyPolicy.ExecuteAsync(async (ct) =>
+                {
+                    _context.Meetups.Add(meetup);
+                    await _context.SaveChangesAsync(ct);
+                    
+                    _logger.LogInformation("Meetup created successfully with ID '{MeetupId}'", meetup.Id);
+                    
+                }, cancellationToken);
 
-                // Save to database
-                _context.Meetups.Add(meetup);
-                await _context.SaveChangesAsync(cancellationToken);
-
-                _logger.LogInformation("Meetup created successfully with ID '{MeetupId}'", meetup.Id);
-                return Result<string>.Success(meetup.Id);
+                return Result.Success(meetup.Id);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 _logger.LogError(ex, "Error occurred while creating meetup");
-                return (Result<string>)Result<string>.Failure("An error occurred while creating the meetup. Please try again.");
+                return (Result<string>)Result.Failure("An error occurred while creating the meetup. Please try again.");
             }
         }
 
@@ -75,7 +84,6 @@ namespace Application.Meetups.Commands
         {
             var errors = new List<string>();
 
-            // Validate required fields with length constraints
             if (string.IsNullOrWhiteSpace(request.Title))
                 errors.Add("Title is required");
             else if (request.Title.Length < 3)

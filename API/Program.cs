@@ -4,8 +4,42 @@ using Mapster;
 using Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Polly;
+using Polly.Extensions.Http;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHttpClient("ResilientClient")
+    .AddPolicyHandler(GetRetryPolicy())
+    .AddPolicyHandler(GetCircuitBreakerPolicy());
+
+builder.Services.AddSingleton<IAsyncPolicy>(serviceProvider =>
+{
+    var retryPolicy = Policy
+        .Handle<Exception>()
+        .WaitAndRetryAsync(
+            retryCount: 3,
+            sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+            onRetry: (exception, timeSpan, retryCount, context) =>
+            {
+                Console.WriteLine($"Retry {retryCount} after {timeSpan} due to: {exception.Message}");
+            });
+
+    return Policy.WrapAsync(retryPolicy);
+});
+
+builder.Services.AddSingleton<IAsyncPolicy>(serviceProvider =>
+{
+    return Policy
+        .Handle<Exception>()
+        .WaitAndRetryAsync(
+            retryCount: 2,
+            sleepDurationProvider: retryAttempt => TimeSpan.FromMilliseconds(500 * retryAttempt),
+            onRetry: (exception, timeSpan, retryCount, context) =>
+            {
+                Console.WriteLine($"Identity operation retry {retryCount} after {timeSpan}");
+            });
+});
 
 builder.Services.AddControllers(opt =>
 {
@@ -55,3 +89,28 @@ app.MapControllers();
 app.MapGroup("api").MapIdentityApi<User>(); // api/login
 
 app.Run();
+
+// Polly politiky pre HTTP klienta
+static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+{
+    return HttpPolicyExtensions
+        .HandleTransientHttpError()
+        .OrResult(msg => !msg.IsSuccessStatusCode)
+        .WaitAndRetryAsync(
+            retryCount: 3,
+            sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+            onRetry: (outcome, timespan, retryCount, context) =>
+            {
+                Console.WriteLine($"HTTP Retry {retryCount} after {timespan} for {outcome.Result?.StatusCode}");
+            });
+}
+
+static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
+{
+    return HttpPolicyExtensions
+        .HandleTransientHttpError()
+        .CircuitBreakerAsync(
+            handledEventsAllowedBeforeBreaking: 3,
+            durationOfBreak: TimeSpan.FromSeconds(30)
+        );
+}
