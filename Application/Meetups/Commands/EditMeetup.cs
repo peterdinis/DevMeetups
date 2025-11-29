@@ -34,8 +34,7 @@ namespace Application.Meetups.Commands
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            
-            // Špecializovaná politika pre edit operácie s concurrency handling
+
             _resiliencyPolicy = Policy
                 .Handle<Exception>()
                 .WaitAndRetryAsync(
@@ -64,7 +63,6 @@ namespace Application.Meetups.Commands
                     return Result.Failure(validationResult.ErrorMessage);
                 }
 
-                // Celá edit operácia s Polly
                 await _resiliencyPolicy.ExecuteAsync(async (ct) =>
                 {
                     // Find existing meetup
@@ -177,8 +175,7 @@ namespace Application.Meetups.Commands
             meetup.Longitude = meetupData.Longitude;
         }
     }
-
-    // Chýbajúce triedy ktoré boli použité v kóde
+    
     public class Result
     {
         public bool IsSuccess { get; }

@@ -10,16 +10,15 @@ namespace Application.Meetups.Commands
     {
         private readonly AppDbContext _context;
         private readonly ILogger<DeleteMeetupHandler> _logger;
-        private readonly AsyncRetryPolicy _retryPolicy; // Pridané
+        private readonly AsyncRetryPolicy _retryPolicy;
 
         public DeleteMeetupHandler(AppDbContext context, ILogger<DeleteMeetupHandler> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            
-            // Definícia Polly retry politiky pre delete operácie
+
             _retryPolicy = Policy
-                .Handle<Exception>() // Môžete špecifikovať konkrétnejšie výnimky ako DbUpdateException
+                .Handle<Exception>()
                 .WaitAndRetryAsync(
                     retryCount: 3,
                     sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
@@ -45,7 +44,6 @@ namespace Application.Meetups.Commands
                     return Result.Failure(validationResult.ErrorMessage);
                 }
 
-                // Find meetup S POUŽITÍM POLLY
                 var meetup = await _retryPolicy.ExecuteAsync(async (ct) =>
                 {
                     return await _context.Meetups.FindAsync(new object[] { command.Id }, ct);
@@ -70,8 +68,7 @@ namespace Application.Meetups.Commands
                     _logger.LogWarning("Attempt to delete past meetup with ID '{MeetupId}'", command.Id);
                     return Result.Failure("Cannot delete meetups that have already occurred.");
                 }
-
-                // Execute deletion S POUŽITÍM POLLY
+                
                 await _retryPolicy.ExecuteAsync(async (ct) =>
                 {
                     _context.Meetups.Remove(meetup);
@@ -103,7 +100,7 @@ namespace Application.Meetups.Commands
                 errors.Add("Invalid meetup ID format");
             }
 
-            return errors.Any() 
+            return errors.Count != 0
                 ? ValidationResult.Invalid(string.Join("; ", errors))
                 : ValidationResult.Valid();
         }

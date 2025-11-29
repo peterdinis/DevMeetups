@@ -1,7 +1,6 @@
 using Domain;
 using Persistence;
 using Microsoft.Extensions.Logging;
-using Application.Validators;
 using Polly;
 
 namespace Application.Meetups.Commands
@@ -62,8 +61,7 @@ namespace Application.Meetups.Commands
 
                 // Create Meetup entity
                 var meetup = CreateMeetupEntity(request);
-
-                // Save to database S POUŽITÍM INJEKTOVANEJ POLLY POLITIKY
+                
                 await _resiliencyPolicy.ExecuteAsync(async (ct) =>
                 {
                     _context.Meetups.Add(meetup);
@@ -73,7 +71,7 @@ namespace Application.Meetups.Commands
                     
                 }, cancellationToken);
 
-                return Result<string>.Success(meetup.Id);
+                return Result.Success(meetup.Id);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
@@ -82,7 +80,6 @@ namespace Application.Meetups.Commands
             }
         }
 
-        // Ostatné metódy ostávajú rovnaké...
         private ValidationResult ValidateCommand(CreateMeetupCommand request)
         {
             var errors = new List<string>();
