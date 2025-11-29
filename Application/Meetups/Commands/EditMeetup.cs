@@ -23,16 +23,10 @@ namespace Application.Meetups.Commands
         public double Longitude { get; set; }
     }
 
-    public class EditMeetupHandler
+    public class EditMeetupHandler(AppDbContext context, ILogger<EditMeetupHandler> logger)
     {
-        private readonly AppDbContext _context;
-        private readonly ILogger<EditMeetupHandler> _logger;
-
-        public EditMeetupHandler(AppDbContext context, ILogger<EditMeetupHandler> logger)
-        {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
+        private readonly AppDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
+        private readonly ILogger<EditMeetupHandler> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
         public async Task<Result> Handle(EditMeetupCommand request, CancellationToken cancellationToken = default)
         {

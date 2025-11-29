@@ -36,14 +36,14 @@ namespace Application.Meetups.Commands
                 if (!validationResult.IsValid)
                 {
                     _logger.LogWarning("Validation failed for create meetup command: {Error}", validationResult.ErrorMessage);
-                    return (Result<string>)Result<string>.Failure(validationResult.ErrorMessage);
+                    return (Result<string>)Result.Failure(validationResult.ErrorMessage);
                 }
 
                 // Business validation - ensure date is in the future
                 if (request.Date <= DateTime.UtcNow.AddHours(1))
                 {
                     _logger.LogWarning("Attempt to create meetup with invalid date: {Date}", request.Date);
-                    return (Result<string>)Result<string>.Failure("Meetup date must be at least 1 hour in the future");
+                    return (Result<string>)Result.Failure("Meetup date must be at least 1 hour in the future");
                 }
 
                 // Business validation - validate coordinates
@@ -51,7 +51,7 @@ namespace Application.Meetups.Commands
                 {
                     _logger.LogWarning("Attempt to create meetup with invalid coordinates: Lat {Latitude}, Long {Longitude}", 
                         request.Latitude, request.Longitude);
-                    return (Result<string>)Result<string>.Failure("Invalid coordinates provided");
+                    return (Result<string>)Result.Failure("Invalid coordinates provided");
                 }
 
                 // Create Meetup entity
@@ -62,12 +62,12 @@ namespace Application.Meetups.Commands
                 await _context.SaveChangesAsync(cancellationToken);
 
                 _logger.LogInformation("Meetup created successfully with ID '{MeetupId}'", meetup.Id);
-                return Result<string>.Success(meetup.Id);
+                return Result.Success(meetup.Id);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 _logger.LogError(ex, "Error occurred while creating meetup");
-                return (Result<string>)Result<string>.Failure("An error occurred while creating the meetup. Please try again.");
+                return (Result<string>)Result.Failure("An error occurred while creating the meetup. Please try again.");
             }
         }
 

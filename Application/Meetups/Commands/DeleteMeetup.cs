@@ -1,20 +1,13 @@
 using Persistence;
-using Domain;
 using Microsoft.Extensions.Logging;
 using Application.Validators;
 
 namespace Application.Meetups.Commands
 {
-    public class DeleteMeetupHandler
+    public class DeleteMeetupHandler(AppDbContext context, ILogger<DeleteMeetupHandler> logger)
     {
-        private readonly AppDbContext _context;
-        private readonly ILogger<DeleteMeetupHandler> _logger;
-
-        public DeleteMeetupHandler(AppDbContext context, ILogger<DeleteMeetupHandler> logger)
-        {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
+        private readonly AppDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
+        private readonly ILogger<DeleteMeetupHandler> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
         public async Task<Result> Handle(DeleteMeetupCommand command, CancellationToken cancellationToken = default)
         {
