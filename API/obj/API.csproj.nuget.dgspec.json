@@ -83,6 +83,10 @@
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
               "version": "[9.0.10, )"
+            },
+            "Polly": {
+              "target": "Package",
+              "version": "[8.6.5, )"
             }
           },
           "imports": [
