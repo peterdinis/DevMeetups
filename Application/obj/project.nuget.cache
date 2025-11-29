@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "/7TERzb5Ppg=",
+  "dgSpecHash": "E4jS1RwsdTY=",
   "success": true,
   "projectFilePath": "/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/Application/Application.csproj",
   "expectedPackageFiles": [
@@ -51,6 +51,8 @@
     "/home/peterdinis/.nuget/packages/microsoft.identitymodel.logging/8.14.0/microsoft.identitymodel.logging.8.14.0.nupkg.sha512",
     "/home/peterdinis/.nuget/packages/microsoft.identitymodel.tokens/8.14.0/microsoft.identitymodel.tokens.8.14.0.nupkg.sha512",
     "/home/peterdinis/.nuget/packages/mono.texttemplating/3.0.0/mono.texttemplating.3.0.0.nupkg.sha512",
+    "/home/peterdinis/.nuget/packages/polly/8.6.5/polly.8.6.5.nupkg.sha512",
+    "/home/peterdinis/.nuget/packages/polly.core/8.6.5/polly.core.8.6.5.nupkg.sha512",
     "/home/peterdinis/.nuget/packages/sqlitepclraw.bundle_e_sqlite3/2.1.10/sqlitepclraw.bundle_e_sqlite3.2.1.10.nupkg.sha512",
     "/home/peterdinis/.nuget/packages/sqlitepclraw.core/2.1.10/sqlitepclraw.core.2.1.10.nupkg.sha512",
     "/home/peterdinis/.nuget/packages/sqlitepclraw.lib.e_sqlite3/2.1.10/sqlitepclraw.lib.e_sqlite3.2.1.10.nupkg.sha512",
