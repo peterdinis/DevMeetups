@@ -1,7 +1,7 @@
 using Domain;
 using Persistence;
 using Microsoft.Extensions.Logging;
-using Application.Validators;
+using Polly;
 
 namespace Application.Meetups.Commands
 {
@@ -20,11 +20,16 @@ namespace Application.Meetups.Commands
     {
         private readonly AppDbContext _context;
         private readonly ILogger<CreateMeetupHandler> _logger;
+        private readonly IAsyncPolicy _resiliencyPolicy; 
 
-        public CreateMeetupHandler(AppDbContext context, ILogger<CreateMeetupHandler> logger)
+        public CreateMeetupHandler(
+            AppDbContext context, 
+            ILogger<CreateMeetupHandler> logger,
+            IAsyncPolicy resiliencyPolicy)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _resiliencyPolicy = resiliencyPolicy ?? throw new ArgumentNullException(nameof(resiliencyPolicy));
         }
 
         public async Task<Result<string>> Handle(CreateMeetupCommand request, CancellationToken cancellationToken = default)
@@ -56,12 +61,24 @@ namespace Application.Meetups.Commands
 
                 // Create Meetup entity
                 var meetup = CreateMeetupEntity(request);
+                
+                await _resiliencyPolicy.ExecuteAsync(async (ct) =>
+                {
+                    _context.Meetups.Add(meetup);
+                    await _context.SaveChangesAsync(ct);
+                    
+                    _logger.LogInformation("Meetup created successfully with ID '{MeetupId}'", meetup.Id);
+                    
+                }, cancellationToken);
 
+<<<<<<< HEAD
                 // Save to database
                 _context.Meetups.Add(meetup);
                 await _context.SaveChangesAsync(cancellationToken);
 
                 _logger.LogInformation("Meetup created successfully with ID '{MeetupId}'", meetup.Id);
+=======
+>>>>>>> main
                 return Result.Success(meetup.Id);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
@@ -75,7 +92,6 @@ namespace Application.Meetups.Commands
         {
             var errors = new List<string>();
 
-            // Validate required fields with length constraints
             if (string.IsNullOrWhiteSpace(request.Title))
                 errors.Add("Title is required");
             else if (request.Title.Length < 3)

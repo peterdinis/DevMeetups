@@ -2,6 +2,7 @@ using Domain;
 using Persistence;
 using Microsoft.Extensions.Logging;
 using Application.Validators;
+using Polly;
 
 namespace Application.Meetups.Queries
 {
@@ -9,18 +10,22 @@ namespace Application.Meetups.Queries
     {
         private readonly AppDbContext _context;
         private readonly ILogger<GetMeetupDetailsHandler> _logger;
+        private readonly IAsyncPolicy _resiliencyPolicy;
 
-        public GetMeetupDetailsHandler(AppDbContext context, ILogger<GetMeetupDetailsHandler> logger)
+        public GetMeetupDetailsHandler(
+            AppDbContext context, 
+            ILogger<GetMeetupDetailsHandler> logger,
+            IAsyncPolicy resiliencyPolicy)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _resiliencyPolicy = resiliencyPolicy ?? throw new ArgumentNullException(nameof(resiliencyPolicy));
         }
 
         public async Task<Result<Meetup>> Handle(GetMeetupDetailsQuery query, CancellationToken cancellationToken = default)
         {
             try
             {
-                // Query validation
                 var validationResult = ValidateQuery(query);
                 if (!validationResult.IsValid)
                 {
@@ -28,16 +33,22 @@ namespace Application.Meetups.Queries
                     return (Result<Meetup>)Result.Failure(validationResult.ErrorMessage);
                 }
 
+<<<<<<< HEAD
                 // Find meetup
                 var meetup = await _context.Meetups.FindAsync([query.Id], cancellationToken);
+=======
+                var meetup = await _resiliencyPolicy.ExecuteAsync(async (ct) =>
+                {
+                    return await _context.Meetups.FindAsync([query.Id], ct);
+                }, cancellationToken);
+>>>>>>> main
 
                 if (meetup is null)
                 {
                     _logger.LogWarning("Meetup with ID '{MeetupId}' not found", query.Id);
                     return (Result<Meetup>)Result.Failure($"Meetup with ID '{query.Id}' not found.");
                 }
-
-                // Business validation - check if meetup is cancelled (optional, depending on requirements)
+                
                 if (meetup.IsCancelled)
                 {
                     _logger.LogInformation("Retrieved cancelled meetup with ID '{MeetupId}'", query.Id);

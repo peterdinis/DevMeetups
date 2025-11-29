@@ -1,13 +1,40 @@
 using Persistence;
 using Microsoft.Extensions.Logging;
-using Application.Validators;
+using Polly;
+using Polly.Retry;
 
 namespace Application.Meetups.Commands
 {
     public class DeleteMeetupHandler(AppDbContext context, ILogger<DeleteMeetupHandler> logger)
     {
+<<<<<<< HEAD
         private readonly AppDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
         private readonly ILogger<DeleteMeetupHandler> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+=======
+        private readonly AppDbContext _context;
+        private readonly ILogger<DeleteMeetupHandler> _logger;
+        private readonly AsyncRetryPolicy _retryPolicy;
+
+        public DeleteMeetupHandler(AppDbContext context, ILogger<DeleteMeetupHandler> logger)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            _retryPolicy = Policy
+                .Handle<Exception>()
+                .WaitAndRetryAsync(
+                    retryCount: 3,
+                    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                    onRetry: (exception, timeSpan, retryCount, context) =>
+                    {
+                        _logger.LogWarning(
+                            "Delete operation retry {RetryCount} after {Delay}ms due to: {ExceptionMessage}",
+                            retryCount,
+                            timeSpan.TotalMilliseconds,
+                            exception.Message);
+                    });
+        }
+>>>>>>> main
 
         public async Task<Result> Handle(DeleteMeetupCommand command, CancellationToken cancellationToken = default)
         {
@@ -21,8 +48,15 @@ namespace Application.Meetups.Commands
                     return Result.Failure(validationResult.ErrorMessage);
                 }
 
+<<<<<<< HEAD
                 // Find meetup
                 var meetup = await _context.Meetups.FindAsync([command.Id], cancellationToken);
+=======
+                var meetup = await _retryPolicy.ExecuteAsync(async (ct) =>
+                {
+                    return await _context.Meetups.FindAsync(new object[] { command.Id }, ct);
+                }, cancellationToken);
+>>>>>>> main
 
                 if (meetup is null)
                 {
@@ -43,12 +77,16 @@ namespace Application.Meetups.Commands
                     _logger.LogWarning("Attempt to delete past meetup with ID '{MeetupId}'", command.Id);
                     return Result.Failure("Cannot delete meetups that have already occurred.");
                 }
+                
+                await _retryPolicy.ExecuteAsync(async (ct) =>
+                {
+                    _context.Meetups.Remove(meetup);
+                    await _context.SaveChangesAsync(ct);
+                    
+                    _logger.LogInformation("Meetup with ID '{MeetupId}' successfully deleted", command.Id);
+                    
+                }, cancellationToken);
 
-                // Execute deletion
-                _context.Meetups.Remove(meetup);
-                await _context.SaveChangesAsync(cancellationToken);
-
-                _logger.LogInformation("Meetup with ID '{MeetupId}' successfully deleted", command.Id);
                 return Result.Success();
             }
             catch (Exception ex) when (ex is not OperationCanceledException)

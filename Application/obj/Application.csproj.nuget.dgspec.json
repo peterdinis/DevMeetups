@@ -79,6 +79,10 @@
             "MediatR": {
               "target": "Package",
               "version": "[13.1.0, )"
+            },
+            "Polly": {
+              "target": "Package",
+              "version": "[8.6.5, )"
             }
           },
           "imports": [

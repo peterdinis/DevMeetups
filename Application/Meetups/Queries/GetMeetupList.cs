@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Microsoft.Extensions.Logging;
 using Application.Validators;
+using Polly;
+using Polly.Retry;
 
 namespace Application.Meetups.Queries
 {
@@ -17,14 +19,40 @@ namespace Application.Meetups.Queries
 
     public class GetMeetupListHandler(AppDbContext context, ILogger<GetMeetupListHandler> logger)
     {
+<<<<<<< HEAD
         private readonly AppDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
         private readonly ILogger<GetMeetupListHandler> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+=======
+        private readonly AppDbContext _context;
+        private readonly ILogger<GetMeetupListHandler> _logger;
+        private readonly AsyncRetryPolicy _retryPolicy;
+
+        public GetMeetupListHandler(AppDbContext context, ILogger<GetMeetupListHandler> logger)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            
+            _retryPolicy = Policy
+                .Handle<Exception>()
+                .Or<DbUpdateException>()
+                .WaitAndRetryAsync(
+                    retryCount: 2,
+                    sleepDurationProvider: retryAttempt => TimeSpan.FromMilliseconds(150 * retryAttempt),
+                    onRetry: (exception, timeSpan, retryCount, context) =>
+                    {
+                        _logger.LogWarning(
+                            "GetMeetupList retry {RetryCount} after {Delay}ms due to: {ExceptionMessage}",
+                            retryCount,
+                            timeSpan.TotalMilliseconds,
+                            exception.Message);
+                    });
+        }
+>>>>>>> main
 
         public async Task<Result<List<Meetup>>> Handle(GetMeetupListQuery query, CancellationToken cancellationToken = default)
         {
             try
             {
-                // Query validation
                 var validationResult = ValidateQuery(query);
                 if (!validationResult.IsValid)
                 {
@@ -32,11 +60,12 @@ namespace Application.Meetups.Queries
                     return (Result<List<Meetup>>)Result.Failure(validationResult.ErrorMessage);
                 }
 
-                // Build query with optional filters
                 var meetupsQuery = BuildMeetupsQuery(query);
-
-                // Execute query
-                var meetups = await meetupsQuery.ToListAsync(cancellationToken);
+                
+                var meetups = await _retryPolicy.ExecuteAsync(async (ct) =>
+                {
+                    return await meetupsQuery.ToListAsync(ct);
+                }, cancellationToken);
 
                 _logger.LogInformation("Retrieved {MeetupCount} meetups from database", meetups.Count);
                 return Result.Success(meetups);
@@ -51,8 +80,7 @@ namespace Application.Meetups.Queries
         private static ValidationResult ValidateQuery(GetMeetupListQuery query)
         {
             var errors = new List<string>();
-
-            // Validate date range if provided
+            
             if (query.FromDate.HasValue && query.ToDate.HasValue)
             {
                 if (query.FromDate.Value > query.ToDate.Value)

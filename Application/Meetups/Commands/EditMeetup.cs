@@ -1,7 +1,8 @@
 using Domain;
 using Persistence;
 using Microsoft.Extensions.Logging;
-using Application.Validators;
+using Polly;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Meetups.Commands
 {
@@ -25,8 +26,35 @@ namespace Application.Meetups.Commands
 
     public class EditMeetupHandler(AppDbContext context, ILogger<EditMeetupHandler> logger)
     {
+<<<<<<< HEAD
         private readonly AppDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
         private readonly ILogger<EditMeetupHandler> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+=======
+        private readonly AppDbContext _context;
+        private readonly ILogger<EditMeetupHandler> _logger;
+        private readonly AsyncPolicy _resiliencyPolicy;
+
+        public EditMeetupHandler(AppDbContext context, ILogger<EditMeetupHandler> logger)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            _resiliencyPolicy = Policy
+                .Handle<Exception>()
+                .WaitAndRetryAsync(
+                    retryCount: 3,
+                    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(retryAttempt),
+                    onRetry: (exception, timeSpan, retryCount, context) =>
+                    {
+                        _logger.LogWarning(
+                            "Edit operation retry {RetryCount} after {Delay}ms due to: {ExceptionType} - {ExceptionMessage}",
+                            retryCount,
+                            timeSpan.TotalMilliseconds,
+                            exception.GetType().Name,
+                            exception.Message);
+                    });
+        }
+>>>>>>> main
 
         public async Task<Result> Handle(EditMeetupCommand request, CancellationToken cancellationToken = default)
         {
@@ -40,48 +68,44 @@ namespace Application.Meetups.Commands
                     return Result.Failure(validationResult.ErrorMessage);
                 }
 
-                // Find existing meetup
-                var meetup = await _context.Meetups.FindAsync(new object[] { request.Id }, cancellationToken);
-                if (meetup is null)
+                await _resiliencyPolicy.ExecuteAsync(async (ct) =>
                 {
-                    _logger.LogWarning("Meetup with ID '{MeetupId}' not found for editing", request.Id);
-                    return Result.Failure($"Meetup with ID '{request.Id}' not found.");
-                }
+                    // Find existing meetup
+                    var meetup = await _context.Meetups.FindAsync(new object[] { request.Id }, ct);
+                    if (meetup is null)
+                        throw new Exception($"Meetup with ID '{request.Id}' not found.");
 
-                // Business validation - check if meetup is cancelled
-                if (meetup.IsCancelled)
-                {
-                    _logger.LogWarning("Attempt to edit cancelled meetup with ID '{MeetupId}'", request.Id);
-                    return Result.Failure("Cannot edit a cancelled meetup.");
-                }
+                    // Business validations
+                    if (meetup.IsCancelled)
+                        throw new Exception("Cannot edit a cancelled meetup.");
 
-                // Business validation - check if meetup date is in the past
-                if (meetup.Date < DateTime.UtcNow)
-                {
-                    _logger.LogWarning("Attempt to edit past meetup with ID '{MeetupId}'", request.Id);
-                    return Result.Failure("Cannot edit meetups that have already occurred.");
-                }
+                    if (meetup.Date < DateTime.UtcNow)
+                        throw new Exception("Cannot edit meetups that have already occurred.");
 
-                // Business validation - ensure new date is in the future
-                if (request.Meetup.Date <= DateTime.UtcNow.AddHours(1))
-                {
-                    _logger.LogWarning("Attempt to set meetup date to past or too soon for ID '{MeetupId}'", request.Id);
-                    return Result.Failure("Meetup date must be at least 1 hour in the future.");
-                }
+                    if (request.Meetup.Date <= DateTime.UtcNow.AddHours(1))
+                        throw new Exception("Meetup date must be at least 1 hour in the future.");
 
-                // Update meetup properties
-                UpdateMeetupProperties(meetup, request.Meetup);
+                    // Update meetup properties
+                    UpdateMeetupProperties(meetup, request.Meetup);
 
-                // Save changes
-                await _context.SaveChangesAsync(cancellationToken);
+                    // Save changes
+                    await _context.SaveChangesAsync(ct);
+                    
+                    _logger.LogInformation("Meetup with ID '{MeetupId}' successfully updated", request.Id);
+                    
+                }, cancellationToken);
 
-                _logger.LogInformation("Meetup with ID '{MeetupId}' successfully updated", request.Id);
                 return Result.Success();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                _logger.LogWarning(ex, "Concurrency conflict while editing meetup with ID '{MeetupId}'", request.Id);
+                return Result.Failure("This meetup was modified by another user. Please refresh and try again.");
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 _logger.LogError(ex, "Error occurred while editing meetup with ID '{MeetupId}'", request.Id);
-                return Result.Failure("An error occurred while updating the meetup. Please try again.");
+                return Result.Failure($"An error occurred while updating the meetup: {ex.Message}");
             }
         }
 
@@ -89,7 +113,6 @@ namespace Application.Meetups.Commands
         {
             var errors = new List<string>();
 
-            // Validate ID
             if (string.IsNullOrWhiteSpace(command.Id))
             {
                 errors.Add("Meetup ID is required");
@@ -99,14 +122,12 @@ namespace Application.Meetups.Commands
                 errors.Add("Invalid meetup ID format");
             }
 
-            // Validate Meetup data
             if (command.Meetup is null)
             {
                 errors.Add("Meetup data is required");
                 return ValidationResult.Invalid(string.Join("; ", errors));
             }
 
-            // Validate individual properties
             if (string.IsNullOrWhiteSpace(command.Meetup.Title))
                 errors.Add("Title is required");
             else if (command.Meetup.Title.Length < 3)
@@ -157,7 +178,52 @@ namespace Application.Meetups.Commands
             meetup.Venue = meetupData.Venue.Trim();
             meetup.Latitude = meetupData.Latitude;
             meetup.Longitude = meetupData.Longitude;
-            // IsCancelled is intentionally not updated
         }
+    }
+    
+    public class Result
+    {
+        public bool IsSuccess { get; }
+        public string Error { get; }
+        public bool IsFailure => !IsSuccess;
+
+        protected Result(bool isSuccess, string error)
+        {
+            IsSuccess = isSuccess;
+            Error = error;
+        }
+
+        public static Result Success() => new Result(true, string.Empty);
+        public static Result Failure(string error) => new Result(false, error);
+        public static Result<T> Success<T>(T value) => new Result<T>(value, true, string.Empty);
+        public static Result<T> Failure<T>(string error) => new Result<T>(default!, false, error);
+    }
+
+    public class Result<T> : Result
+    {
+        private readonly T _value;
+
+        public T Value => IsSuccess ? _value : throw new InvalidOperationException("Cannot access Value of failed result");
+
+        protected internal Result(T value, bool isSuccess, string error)
+            : base(isSuccess, error)
+        {
+            _value = value;
+        }
+    }
+
+    public class ValidationResult
+    {
+        public bool IsValid { get; }
+        public string ErrorMessage { get; }
+
+        private ValidationResult(bool isValid, string errorMessage)
+        {
+            IsValid = isValid;
+            ErrorMessage = errorMessage;
+        }
+
+        public static ValidationResult Valid() => new ValidationResult(true, string.Empty);
+        public static ValidationResult Invalid(string errorMessage) => new ValidationResult(false, errorMessage);
     }
 }
