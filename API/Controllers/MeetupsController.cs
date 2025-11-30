@@ -2,7 +2,6 @@ using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Application.Meetups.Queries;
 using Application.Meetups.Commands;
-using Application.Validators;
 using Microsoft.AspNetCore.Authorization;
 using Polly;
 using Polly.CircuitBreaker;
@@ -37,7 +36,6 @@ namespace API.Controllers
             _deleteMeetupHandler = deleteMeetupHandler;
             _logger = logger;
             
-            // Komplexná Polly politika pre kontroler
             _resiliencyPolicy = CreateResiliencyPolicy();
         }
 
@@ -53,7 +51,12 @@ namespace API.Controllers
                     return await _getMeetupListHandler.Handle(query);
                 });
 
-                return HandleResult(result);
+                if (result.IsSuccess)
+                {
+                    return Ok(result.Value);
+                }
+
+                return MapErrorToActionResult(result.Error);
             }
             catch (TimeoutRejectedException)
             {
@@ -89,7 +92,12 @@ namespace API.Controllers
                     return await _getMeetupDetailsHandler.Handle(query);
                 });
 
-                return HandleResult(result);
+                if (result.IsSuccess)
+                {
+                    return Ok(result.Value);
+                }
+
+                return MapErrorToActionResult(result.Error);
             }
             catch (TimeoutRejectedException)
             {
@@ -130,7 +138,7 @@ namespace API.Controllers
                     return CreatedAtAction(nameof(GetMeetupDetail), new { id = result.Value }, new { id = result.Value });
                 }
                 
-                return HandleResult(result);
+                return MapErrorToActionResult(result.Error);
             }
             catch (TimeoutRejectedException)
             {
@@ -171,7 +179,12 @@ namespace API.Controllers
                     return await _editMeetupHandler.Handle(command);
                 });
 
-                return HandleResult(result);
+                if (result.IsSuccess)
+                {
+                    return NoContent();
+                }
+
+                return MapErrorToActionResult(result.Error);
             }
             catch (TimeoutRejectedException)
             {
@@ -210,9 +223,10 @@ namespace API.Controllers
                 if (result.IsSuccess)
                 {
                     _logger.LogInformation("Meetup deleted successfully with ID: {MeetupId}", id);
+                    return NoContent();
                 }
 
-                return HandleResult(result);
+                return MapErrorToActionResult(result.Error);
             }
             catch (TimeoutRejectedException)
             {
@@ -231,26 +245,6 @@ namespace API.Controllers
             }
         }
 
-        private ActionResult HandleResult(Result result)
-        {
-            if (result.IsSuccess)
-            {
-                return NoContent();
-            }
-
-            return MapErrorToActionResult(result.Error);
-        }
-
-        private ActionResult<T> HandleResult<T>(Result<T> result)
-        {
-            if (result.IsSuccess)
-            {
-                return Ok(result.Value);
-            }
-
-            return MapErrorToActionResult<T>(result.Error);
-        }
-
         private ActionResult MapErrorToActionResult(string error)
         {
             if (string.IsNullOrEmpty(error))
@@ -262,20 +256,16 @@ namespace API.Controllers
             return lowerError switch
             {
                 var e when e.Contains("not found") => NotFound(new { error }),
-                var e when e.Contains("required") || e.Contains("invalid") || e.Contains("cannot exceed") => 
+                var e when e.Contains("required") || e.Contains("invalid") || e.Contains("cannot exceed") || 
+                           e.Contains("must be at least") || e.Contains("cannot be more than") => 
                     BadRequest(new { error }),
-                var e when e.Contains("already occurred") || e.Contains("cancelled") || e.Contains("future") || e.Contains("past") => 
+                var e when e.Contains("already occurred") || e.Contains("cancelled") || e.Contains("future") || 
+                           e.Contains("past") || e.Contains("already cancelled") => 
                     BadRequest(new { error }),
                 var e when e.Contains("unauthorized") || e.Contains("forbidden") => 
                     Unauthorized(new { error }),
-                _ => BadRequest(new { error }) // Všetky business chyby vracajú 400
+                _ => StatusCode(500, new { error = "An unexpected error occurred" })
             };
-        }
-
-        private ActionResult<T> MapErrorToActionResult<T>(string error)
-        {
-            var actionResult = MapErrorToActionResult(error);
-            return actionResult as ActionResult<T> ?? BadRequest(new { error });
         }
 
         private AsyncPolicy CreateResiliencyPolicy()
@@ -294,18 +284,9 @@ namespace API.Controllers
                 .TimeoutAsync(TimeSpan.FromSeconds(10), TimeoutStrategy.Optimistic);
 
             var circuitBreakerPolicy = Policy
-                .Handle<Exception>()
-                .CircuitBreakerAsync(
-                    handledEventsAllowedBeforeBreaking: 3,
-                    durationOfBreak: TimeSpan.FromSeconds(30),
-                    onBreak: (exception, duration) =>
-                    {
-                        _logger.LogError("Circuit breaker opened for {Duration} due to: {Exception}", duration, exception.Message);
-                    },
-                    onReset: () => _logger.LogInformation("Circuit breaker reset"),
-                    onHalfOpen: () => _logger.LogInformation("Circuit breaker half-open"));
+                .Handle<Exception>();
 
-            return Policy.WrapAsync(retryPolicy, timeoutPolicy, circuitBreakerPolicy);
+            return Policy.WrapAsync(retryPolicy, timeoutPolicy);
         }
     }
 }
