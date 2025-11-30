@@ -13,7 +13,7 @@ namespace Application.Meetups.Commands
         private readonly AsyncRetryPolicy _retryPolicy;
 
         public DeleteMeetupHandler(AppDbContext context, ILogger<DeleteMeetupHandler> logger)
-        {
+        { 
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
