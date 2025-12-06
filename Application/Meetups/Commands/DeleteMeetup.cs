@@ -1,40 +1,34 @@
+using Domain;
 using Persistence;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
+using Application.Validators;
 
 namespace Application.Meetups.Commands
 {
     public class DeleteMeetupHandler(AppDbContext context, ILogger<DeleteMeetupHandler> logger)
     {
-<<<<<<< HEAD
         private readonly AppDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
         private readonly ILogger<DeleteMeetupHandler> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-=======
-        private readonly AppDbContext _context;
-        private readonly ILogger<DeleteMeetupHandler> _logger;
-        private readonly AsyncRetryPolicy _retryPolicy;
+        private readonly AsyncRetryPolicy _retryPolicy = CreateRetryPolicy(logger);
 
-        public DeleteMeetupHandler(AppDbContext context, ILogger<DeleteMeetupHandler> logger)
-        { 
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-            _retryPolicy = Policy
+        private static AsyncRetryPolicy CreateRetryPolicy(ILogger<DeleteMeetupHandler> logger)
+        {
+            return Policy
                 .Handle<Exception>()
                 .WaitAndRetryAsync(
                     retryCount: 3,
                     sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                     onRetry: (exception, timeSpan, retryCount, context) =>
                     {
-                        _logger.LogWarning(
+                        logger.LogWarning(
                             "Delete operation retry {RetryCount} after {Delay}ms due to: {ExceptionMessage}",
                             retryCount,
                             timeSpan.TotalMilliseconds,
                             exception.Message);
                     });
         }
->>>>>>> main
 
         public async Task<Result> Handle(DeleteMeetupCommand command, CancellationToken cancellationToken = default)
         {
@@ -48,15 +42,8 @@ namespace Application.Meetups.Commands
                     return Result.Failure(validationResult.ErrorMessage);
                 }
 
-<<<<<<< HEAD
                 // Find meetup
                 var meetup = await _context.Meetups.FindAsync([command.Id], cancellationToken);
-=======
-                var meetup = await _retryPolicy.ExecuteAsync(async (ct) =>
-                {
-                    return await _context.Meetups.FindAsync(new object[] { command.Id }, ct);
-                }, cancellationToken);
->>>>>>> main
 
                 if (meetup is null)
                 {

@@ -16,23 +16,16 @@ namespace Application.Meetups.Queries
         public string? Category { get; set; }
         public string? City { get; set; }
     }
-
+    
     public class GetMeetupListHandler(AppDbContext context, ILogger<GetMeetupListHandler> logger)
     {
-<<<<<<< HEAD
         private readonly AppDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
         private readonly ILogger<GetMeetupListHandler> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-=======
-        private readonly AppDbContext _context;
-        private readonly ILogger<GetMeetupListHandler> _logger;
-        private readonly AsyncRetryPolicy _retryPolicy;
+        private readonly AsyncRetryPolicy _retryPolicy = CreateRetryPolicy(logger);
 
-        public GetMeetupListHandler(AppDbContext context, ILogger<GetMeetupListHandler> logger)
+        private static AsyncRetryPolicy CreateRetryPolicy(ILogger<GetMeetupListHandler> logger)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            
-            _retryPolicy = Policy
+            return Policy
                 .Handle<Exception>()
                 .Or<DbUpdateException>()
                 .WaitAndRetryAsync(
@@ -40,14 +33,13 @@ namespace Application.Meetups.Queries
                     sleepDurationProvider: retryAttempt => TimeSpan.FromMilliseconds(150 * retryAttempt),
                     onRetry: (exception, timeSpan, retryCount, context) =>
                     {
-                        _logger.LogWarning(
+                        logger.LogWarning(
                             "GetMeetupList retry {RetryCount} after {Delay}ms due to: {ExceptionMessage}",
                             retryCount,
                             timeSpan.TotalMilliseconds,
                             exception.Message);
                     });
         }
->>>>>>> main
 
         public async Task<Result<List<Meetup>>> Handle(GetMeetupListQuery query, CancellationToken cancellationToken = default)
         {
