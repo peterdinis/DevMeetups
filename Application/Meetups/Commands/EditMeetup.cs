@@ -3,6 +3,7 @@ using Persistence;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Microsoft.EntityFrameworkCore;
+using Application.Validators;
 
 namespace Application.Meetups.Commands
 {
@@ -24,12 +25,8 @@ namespace Application.Meetups.Commands
         public double Longitude { get; set; }
     }
 
-    public class EditMeetupHandler(AppDbContext context, ILogger<EditMeetupHandler> logger)
+    public class EditMeetupHandler
     {
-<<<<<<< HEAD
-        private readonly AppDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
-        private readonly ILogger<EditMeetupHandler> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-=======
         private readonly AppDbContext _context;
         private readonly ILogger<EditMeetupHandler> _logger;
         private readonly AsyncPolicy _resiliencyPolicy;
@@ -54,7 +51,6 @@ namespace Application.Meetups.Commands
                             exception.Message);
                     });
         }
->>>>>>> main
 
         public async Task<Result> Handle(EditMeetupCommand request, CancellationToken cancellationToken = default)
         {
@@ -71,7 +67,7 @@ namespace Application.Meetups.Commands
                 await _resiliencyPolicy.ExecuteAsync(async (ct) =>
                 {
                     // Find existing meetup
-                    var meetup = await _context.Meetups.FindAsync(new object[] { request.Id }, ct);
+                    var meetup = await _context.Meetups.FindAsync([request.Id], ct);
                     if (meetup is null)
                         throw new Exception($"Meetup with ID '{request.Id}' not found.");
 
@@ -179,51 +175,5 @@ namespace Application.Meetups.Commands
             meetup.Latitude = meetupData.Latitude;
             meetup.Longitude = meetupData.Longitude;
         }
-    }
-    
-    public class Result
-    {
-        public bool IsSuccess { get; }
-        public string Error { get; }
-        public bool IsFailure => !IsSuccess;
-
-        protected Result(bool isSuccess, string error)
-        {
-            IsSuccess = isSuccess;
-            Error = error;
-        }
-
-        public static Result Success() => new Result(true, string.Empty);
-        public static Result Failure(string error) => new Result(false, error);
-        public static Result<T> Success<T>(T value) => new Result<T>(value, true, string.Empty);
-        public static Result<T> Failure<T>(string error) => new Result<T>(default!, false, error);
-    }
-
-    public class Result<T> : Result
-    {
-        private readonly T _value;
-
-        public T Value => IsSuccess ? _value : throw new InvalidOperationException("Cannot access Value of failed result");
-
-        protected internal Result(T value, bool isSuccess, string error)
-            : base(isSuccess, error)
-        {
-            _value = value;
-        }
-    }
-
-    public class ValidationResult
-    {
-        public bool IsValid { get; }
-        public string ErrorMessage { get; }
-
-        private ValidationResult(bool isValid, string errorMessage)
-        {
-            IsValid = isValid;
-            ErrorMessage = errorMessage;
-        }
-
-        public static ValidationResult Valid() => new ValidationResult(true, string.Empty);
-        public static ValidationResult Invalid(string errorMessage) => new ValidationResult(false, errorMessage);
     }
 }

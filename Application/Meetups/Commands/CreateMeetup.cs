@@ -2,6 +2,7 @@ using Domain;
 using Persistence;
 using Microsoft.Extensions.Logging;
 using Polly;
+using Application.Validators;
 
 namespace Application.Meetups.Commands
 {
@@ -71,14 +72,11 @@ namespace Application.Meetups.Commands
                     
                 }, cancellationToken);
 
-<<<<<<< HEAD
                 // Save to database
                 _context.Meetups.Add(meetup);
                 await _context.SaveChangesAsync(cancellationToken);
 
                 _logger.LogInformation("Meetup created successfully with ID '{MeetupId}'", meetup.Id);
-=======
->>>>>>> main
                 return Result.Success(meetup.Id);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
