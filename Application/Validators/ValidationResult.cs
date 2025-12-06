@@ -11,7 +11,11 @@ namespace Application.Validators
             ErrorMessage = errorMessage;
         }
 
-        public static ValidationResult Valid() => new ValidationResult(true, null);
-        public static ValidationResult Invalid(string errorMessage) => new ValidationResult(false, errorMessage);
+        public static ValidationResult Valid()
+        {
+            return new ValidationResult(true, null);
+        }
+
+        public static ValidationResult Invalid(string errorMessage) => new(false, errorMessage);
     }
 }

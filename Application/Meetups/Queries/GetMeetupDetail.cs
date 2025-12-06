@@ -33,10 +33,15 @@ namespace Application.Meetups.Queries
                     return (Result<Meetup>)Result.Failure(validationResult.ErrorMessage);
                 }
 
+<<<<<<< HEAD
+                // Find meetup
+                var meetup = await _context.Meetups.FindAsync([query.Id], cancellationToken);
+=======
                 var meetup = await _resiliencyPolicy.ExecuteAsync(async (ct) =>
                 {
                     return await _context.Meetups.FindAsync([query.Id], ct);
                 }, cancellationToken);
+>>>>>>> main
 
                 if (meetup is null)
                 {

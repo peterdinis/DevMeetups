@@ -5,6 +5,15 @@ import tsconfigPaths from "vite-tsconfig-paths"
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5129',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
   plugins: [
     tanstackRouter({
       target: 'react',

@@ -71,6 +71,14 @@ namespace Application.Meetups.Commands
                     
                 }, cancellationToken);
 
+<<<<<<< HEAD
+                // Save to database
+                _context.Meetups.Add(meetup);
+                await _context.SaveChangesAsync(cancellationToken);
+
+                _logger.LogInformation("Meetup created successfully with ID '{MeetupId}'", meetup.Id);
+=======
+>>>>>>> main
                 return Result.Success(meetup.Id);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
@@ -80,7 +88,7 @@ namespace Application.Meetups.Commands
             }
         }
 
-        private ValidationResult ValidateCommand(CreateMeetupCommand request)
+        private static ValidationResult ValidateCommand(CreateMeetupCommand request)
         {
             var errors = new List<string>();
 
@@ -118,13 +126,13 @@ namespace Application.Meetups.Commands
                 : ValidationResult.Valid();
         }
 
-        private bool IsValidCoordinates(double latitude, double longitude)
+        private static bool IsValidCoordinates(double latitude, double longitude)
         {
             return latitude >= -90 && latitude <= 90 && 
                    longitude >= -180 && longitude <= 180;
         }
 
-        private Meetup CreateMeetupEntity(CreateMeetupCommand request)
+        private static Meetup CreateMeetupEntity(CreateMeetupCommand request)
         {
             return new Meetup
             {

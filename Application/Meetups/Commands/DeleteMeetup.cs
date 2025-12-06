@@ -1,13 +1,16 @@
 using Persistence;
-using Domain;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
 
 namespace Application.Meetups.Commands
 {
-    public class DeleteMeetupHandler
+    public class DeleteMeetupHandler(AppDbContext context, ILogger<DeleteMeetupHandler> logger)
     {
+<<<<<<< HEAD
+        private readonly AppDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
+        private readonly ILogger<DeleteMeetupHandler> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+=======
         private readonly AppDbContext _context;
         private readonly ILogger<DeleteMeetupHandler> _logger;
         private readonly AsyncRetryPolicy _retryPolicy;
@@ -31,6 +34,7 @@ namespace Application.Meetups.Commands
                             exception.Message);
                     });
         }
+>>>>>>> main
 
         public async Task<Result> Handle(DeleteMeetupCommand command, CancellationToken cancellationToken = default)
         {
@@ -44,10 +48,15 @@ namespace Application.Meetups.Commands
                     return Result.Failure(validationResult.ErrorMessage);
                 }
 
+<<<<<<< HEAD
+                // Find meetup
+                var meetup = await _context.Meetups.FindAsync([command.Id], cancellationToken);
+=======
                 var meetup = await _retryPolicy.ExecuteAsync(async (ct) =>
                 {
                     return await _context.Meetups.FindAsync(new object[] { command.Id }, ct);
                 }, cancellationToken);
+>>>>>>> main
 
                 if (meetup is null)
                 {
@@ -87,7 +96,7 @@ namespace Application.Meetups.Commands
             }
         }
 
-        private ValidationResult ValidateCommand(DeleteMeetupCommand command)
+        private static ValidationResult ValidateCommand(DeleteMeetupCommand command)
         {
             var errors = new List<string>();
 
