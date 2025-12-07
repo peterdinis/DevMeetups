@@ -1,5 +1,7 @@
 # 🚀 Dev Meetups Application
 
+🚧 This project is currently under development 🚧
+
 A modern web application for developers to create and join tech meetups! Built with a robust tech stack and clean architecture.
 
 ## ✨ Features
@@ -29,5 +31,5 @@ A modern web application for developers to create and join tech meetups! Built w
 - **🌐 ASP.NET Core** - Robust backend framework
 - **📋 CQRS Pattern** - Command Query Responsibility Segregation
 - **🗄️ Entity Framework Core** - Data access layer
-- **🐋 SQL Server** - Database management
+- **🐋 Sqlite** - Database management (Later postgresql for production)
 - **🔐 JWT Authentication** - Secure user authentication
