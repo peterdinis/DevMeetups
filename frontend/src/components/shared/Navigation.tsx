@@ -82,40 +82,42 @@ const Navigation: FC = () => {
 					</Flex>
 
 					{/* Search Bar - Hidden on mobile and tablet */}
-					<Flex
-						position="relative"
-						maxW="400px"
-						flex="1"
-						display={{ base: "none", lg: "flex" }}
-					>
-						<Icon
-							as={Search}
-							w={4}
-							h={4}
-							color={textTertiary}
-							position="absolute"
-							left="12px"
-							top="50%"
-							transform="translateY(-50%)"
-							zIndex={1}
-						/>
-						<Input
-							placeholder="Browse Meetups"
-							bg={inputBg}
-							border="1px"
-							borderColor={inputBorder}
-							borderRadius="lg"
-							pl={10}
-							color={textColor}
-							_placeholder={{ color: textTertiary }}
-							_hover={{ borderColor: borderColor }}
-							_focus={{
-								borderColor: "blue.500",
-								boxShadow: "0 0 0 1px blue.500",
-								bg: useColorModeValue("white", "gray.600"),
-							}}
-						/>
-					</Flex>
+					{user && (
+						<Flex
+							position="relative"
+							maxW="400px"
+							flex="1"
+							display={{ base: "none", lg: "flex" }}
+						>
+							<Icon
+								as={Search}
+								w={4}
+								h={4}
+								color={textTertiary}
+								position="absolute"
+								left="12px"
+								top="50%"
+								transform="translateY(-50%)"
+								zIndex={1}
+							/>
+							<Input
+								placeholder="Browse Meetups"
+								bg={inputBg}
+								border="1px"
+								borderColor={inputBorder}
+								borderRadius="lg"
+								pl={10}
+								color={textColor}
+								_placeholder={{ color: textTertiary }}
+								_hover={{ borderColor: borderColor }}
+								_focus={{
+									borderColor: "blue.500",
+									boxShadow: "0 0 0 1px blue.500",
+									bg: useColorModeValue("white", "gray.600"),
+								}}
+							/>
+						</Flex>
+					)}
 
 					{/* Right side icons and user */}
 					<Flex align="center" gap={4}>
@@ -131,145 +133,147 @@ const Navigation: FC = () => {
 						/>
 						<ColorModeButton />
 						{/* Notifications Dropdown - Hidden on mobile */}
-						<Menu.Root positioning={{ placement: "bottom-end" }}>
-							<Menu.Trigger asChild>
-								<Box
-									position="relative"
-									p={2}
-									borderRadius="md"
-									_hover={{ bg: hoverBg, cursor: "pointer" }}
-									display={{ base: "none", md: "block" }}
-									transition="all 0.2s"
-								>
-									<Icon as={Bell} w={5} h={5} color={iconColor} />
+						{user && (
+							<Menu.Root positioning={{ placement: "bottom-end" }}>
+								<Menu.Trigger asChild>
 									<Box
-										position="absolute"
-										top={1}
-										right={1}
-										w={2}
-										h={2}
-										bg="red.500"
-										borderRadius="full"
-										border="2px"
-										borderColor={bgColor}
-									/>
-								</Box>
-							</Menu.Trigger>
-							<Menu.Positioner>
-								<Menu.Content
-									bg={menuBg}
-									borderRadius="xl"
-									shadow="xl"
-									border="1px"
-									borderColor={borderColor}
-									p={2}
-									minW="280px"
-								>
-									<Flex
-										align="center"
-										justify="space-between"
-										p={3}
-										borderBottom="1px"
-										borderColor={borderColor}
-									>
-										<Text fontWeight="bold" color={textColor}>
-											Notifications
-										</Text>
-										<Text fontSize="sm" color="blue.500" cursor="pointer">
-											Mark all read
-										</Text>
-									</Flex>
-
-									<Menu.Item
-										value="meetup"
-										_hover={{ bg: hoverBg }}
-										p={3}
-										borderRadius="md"
-									>
-										<Flex align="start" gap={3}>
-											<Box p={2} bg="blue.100" borderRadius="md">
-												<Icon as={Calendar} w={4} h={4} color="blue.600" />
-											</Box>
-											<Box flex="1">
-												<Text fontWeight="medium" color={textColor}>
-													New meetup scheduled
-												</Text>
-												<Text fontSize="sm" color={textSecondary} mt={1}>
-													React Conference - Tomorrow at 2 PM
-												</Text>
-												<Text fontSize="xs" color={textTertiary} mt={1}>
-													2 hours ago
-												</Text>
-											</Box>
-										</Flex>
-									</Menu.Item>
-
-									<Menu.Item
-										value="attendees"
-										_hover={{ bg: useColorModeValue("green.50", "gray.700") }}
-										p={3}
-										borderRadius="md"
-									>
-										<Flex align="start" gap={3}>
-											<Box p={2} bg="green.100" borderRadius="md">
-												<Icon as={UserPlus} w={4} h={4} color="green.600" />
-											</Box>
-											<Box flex="1">
-												<Text fontWeight="medium" color={textColor}>
-													New attendees
-												</Text>
-												<Text fontSize="sm" color={textSecondary} mt={1}>
-													3 people joined your meetup
-												</Text>
-												<Text fontSize="xs" color={textTertiary} mt={1}>
-													5 hours ago
-												</Text>
-											</Box>
-										</Flex>
-									</Menu.Item>
-
-									<Menu.Item
-										value="reminder"
-										_hover={{ bg: useColorModeValue("orange.50", "gray.700") }}
-										p={3}
-										borderRadius="md"
-									>
-										<Flex align="start" gap={3}>
-											<Box p={2} bg="orange.100" borderRadius="md">
-												<Icon as={Bell} w={4} h={4} color="orange.600" />
-											</Box>
-											<Box flex="1">
-												<Text fontWeight="medium" color={textColor}>
-													Reminder
-												</Text>
-												<Text fontSize="sm" color={textSecondary} mt={1}>
-													Don't forget about the meetup
-												</Text>
-												<Text fontSize="xs" color={textTertiary} mt={1}>
-													1 day ago
-												</Text>
-											</Box>
-										</Flex>
-									</Menu.Item>
-
-									<Flex
-										justify="center"
+										position="relative"
 										p={2}
-										borderTop="1px"
-										borderColor={borderColor}
+										borderRadius="md"
+										_hover={{ bg: hoverBg, cursor: "pointer" }}
+										display={{ base: "none", md: "block" }}
+										transition="all 0.2s"
 									>
-										<Text
-											fontSize="sm"
-											color="blue.500"
-											cursor="pointer"
-											fontWeight="medium"
+										<Icon as={Bell} w={5} h={5} color={iconColor} />
+										<Box
+											position="absolute"
+											top={1}
+											right={1}
+											w={2}
+											h={2}
+											bg="red.500"
+											borderRadius="full"
+											border="2px"
+											borderColor={bgColor}
+										/>
+									</Box>
+								</Menu.Trigger>
+								<Menu.Positioner>
+									<Menu.Content
+										bg={menuBg}
+										borderRadius="xl"
+										shadow="xl"
+										border="1px"
+										borderColor={borderColor}
+										p={2}
+										minW="280px"
+									>
+										<Flex
+											align="center"
+											justify="space-between"
+											p={3}
+											borderBottom="1px"
+											borderColor={borderColor}
 										>
-											View all notifications
-										</Text>
-									</Flex>
-								</Menu.Content>
-							</Menu.Positioner>
-						</Menu.Root>
+											<Text fontWeight="bold" color={textColor}>
+												Notifications
+											</Text>
+											<Text fontSize="sm" color="blue.500" cursor="pointer">
+												Mark all read
+											</Text>
+										</Flex>
+
+										<Menu.Item
+											value="meetup"
+											_hover={{ bg: hoverBg }}
+											p={3}
+											borderRadius="md"
+										>
+											<Flex align="start" gap={3}>
+												<Box p={2} bg="blue.100" borderRadius="md">
+													<Icon as={Calendar} w={4} h={4} color="blue.600" />
+												</Box>
+												<Box flex="1">
+													<Text fontWeight="medium" color={textColor}>
+														New meetup scheduled
+													</Text>
+													<Text fontSize="sm" color={textSecondary} mt={1}>
+														React Conference - Tomorrow at 2 PM
+													</Text>
+													<Text fontSize="xs" color={textTertiary} mt={1}>
+														2 hours ago
+													</Text>
+												</Box>
+											</Flex>
+										</Menu.Item>
+
+										<Menu.Item
+											value="attendees"
+											_hover={{ bg: useColorModeValue("green.50", "gray.700") }}
+											p={3}
+											borderRadius="md"
+										>
+											<Flex align="start" gap={3}>
+												<Box p={2} bg="green.100" borderRadius="md">
+													<Icon as={UserPlus} w={4} h={4} color="green.600" />
+												</Box>
+												<Box flex="1">
+													<Text fontWeight="medium" color={textColor}>
+														New attendees
+													</Text>
+													<Text fontSize="sm" color={textSecondary} mt={1}>
+														3 people joined your meetup
+													</Text>
+													<Text fontSize="xs" color={textTertiary} mt={1}>
+														5 hours ago
+													</Text>
+												</Box>
+											</Flex>
+										</Menu.Item>
+
+										<Menu.Item
+											value="reminder"
+											_hover={{ bg: useColorModeValue("orange.50", "gray.700") }}
+											p={3}
+											borderRadius="md"
+										>
+											<Flex align="start" gap={3}>
+												<Box p={2} bg="orange.100" borderRadius="md">
+													<Icon as={Bell} w={4} h={4} color="orange.600" />
+												</Box>
+												<Box flex="1">
+													<Text fontWeight="medium" color={textColor}>
+														Reminder
+													</Text>
+													<Text fontSize="sm" color={textSecondary} mt={1}>
+														Don't forget about the meetup
+													</Text>
+													<Text fontSize="xs" color={textTertiary} mt={1}>
+														1 day ago
+													</Text>
+												</Box>
+											</Flex>
+										</Menu.Item>
+
+										<Flex
+											justify="center"
+											p={2}
+											borderTop="1px"
+											borderColor={borderColor}
+										>
+											<Text
+												fontSize="sm"
+												color="blue.500"
+												cursor="pointer"
+												fontWeight="medium"
+											>
+												View all notifications
+											</Text>
+										</Flex>
+									</Menu.Content>
+								</Menu.Positioner>
+							</Menu.Root>
+						)}
 
 						{/* User Dropdown - Hidden on mobile */}
 						{user ? (
