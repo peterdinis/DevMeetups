@@ -9,69 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from "./routes/__root";
-import { Route as RegisterRouteImport } from "./routes/register";
-import { Route as LoginRouteImport } from "./routes/login";
 
-const RegisterRoute = RegisterRouteImport.update({
-	id: "/register",
-	path: "/register",
-	getParentRoute: () => rootRouteImport,
-} as any);
-const LoginRoute = LoginRouteImport.update({
-	id: "/login",
-	path: "/login",
-	getParentRoute: () => rootRouteImport,
-} as any);
-
-export interface FileRoutesByFullPath {
-	"/login": typeof LoginRoute;
-	"/register": typeof RegisterRoute;
-}
-export interface FileRoutesByTo {
-	"/login": typeof LoginRoute;
-	"/register": typeof RegisterRoute;
-}
+export interface FileRoutesByFullPath {}
+export interface FileRoutesByTo {}
 export interface FileRoutesById {
 	__root__: typeof rootRouteImport;
-	"/login": typeof LoginRoute;
-	"/register": typeof RegisterRoute;
 }
 export interface FileRouteTypes {
 	fileRoutesByFullPath: FileRoutesByFullPath;
-	fullPaths: "/login" | "/register";
+	fullPaths: never;
 	fileRoutesByTo: FileRoutesByTo;
-	to: "/login" | "/register";
-	id: "__root__" | "/login" | "/register";
+	to: never;
+	id: "__root__";
 	fileRoutesById: FileRoutesById;
 }
-export interface RootRouteChildren {
-	LoginRoute: typeof LoginRoute;
-	RegisterRoute: typeof RegisterRoute;
-}
+export interface RootRouteChildren {}
 
 declare module "@tanstack/react-router" {
-	interface FileRoutesByPath {
-		"/register": {
-			id: "/register";
-			path: "/register";
-			fullPath: "/register";
-			preLoaderRoute: typeof RegisterRouteImport;
-			parentRoute: typeof rootRouteImport;
-		};
-		"/login": {
-			id: "/login";
-			path: "/login";
-			fullPath: "/login";
-			preLoaderRoute: typeof LoginRouteImport;
-			parentRoute: typeof rootRouteImport;
-		};
-	}
+	interface FileRoutesByPath {}
 }
 
-const rootRouteChildren: RootRouteChildren = {
-	LoginRoute: LoginRoute,
-	RegisterRoute: RegisterRoute,
-};
+const rootRouteChildren: RootRouteChildren = {};
 export const routeTree = rootRouteImport
 	._addFileChildren(rootRouteChildren)
 	._addFileTypes<FileRouteTypes>();
