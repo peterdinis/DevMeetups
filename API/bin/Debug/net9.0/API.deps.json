@@ -17,7 +17,9 @@
           "Mapster.DependencyInjection": "1.0.3-pre02",
           "Microsoft.AspNetCore.OpenApi": "9.0.9",
           "Microsoft.EntityFrameworkCore.Sqlite": "9.0.10",
-          "Persistence": "1.0.0"
+          "Microsoft.Extensions.Http.Polly": "9.0.11",
+          "Persistence": "1.0.0",
+          "Polly": "8.6.5"
         },
         "runtime": {
           "API.dll": {}
@@ -584,12 +586,35 @@
           }
         }
       },
+      "Microsoft.Extensions.Configuration/9.0.11": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "9.0.11",
+          "Microsoft.Extensions.Primitives": "9.0.11"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.Extensions.Configuration.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.1125.51716"
+          }
+        }
+      },
       "Microsoft.Extensions.Configuration.Abstractions/9.0.11": {
         "dependencies": {
           "Microsoft.Extensions.Primitives": "9.0.11"
         },
         "runtime": {
           "lib/net9.0/Microsoft.Extensions.Configuration.Abstractions.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.1125.51716"
+          }
+        }
+      },
+      "Microsoft.Extensions.Configuration.Binder/9.0.11": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "9.0.11"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.Extensions.Configuration.Binder.dll": {
             "assemblyVersion": "9.0.0.0",
             "fileVersion": "9.0.1125.51716"
           }
@@ -619,6 +644,60 @@
           "lib/net9.0/Microsoft.Extensions.DependencyModel.dll": {
             "assemblyVersion": "9.0.0.10",
             "fileVersion": "9.0.1025.47515"
+          }
+        }
+      },
+      "Microsoft.Extensions.Diagnostics/9.0.11": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "9.0.11",
+          "Microsoft.Extensions.Diagnostics.Abstractions": "9.0.11",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "9.0.11"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.Extensions.Diagnostics.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.1125.51716"
+          }
+        }
+      },
+      "Microsoft.Extensions.Diagnostics.Abstractions/9.0.11": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.11",
+          "Microsoft.Extensions.Options": "9.0.11"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.Extensions.Diagnostics.Abstractions.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.1125.51716"
+          }
+        }
+      },
+      "Microsoft.Extensions.Http/9.0.11": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "9.0.11",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.11",
+          "Microsoft.Extensions.Diagnostics": "9.0.11",
+          "Microsoft.Extensions.Logging": "9.0.11",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.11",
+          "Microsoft.Extensions.Options": "9.0.11"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.Extensions.Http.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.1125.51716"
+          }
+        }
+      },
+      "Microsoft.Extensions.Http.Polly/9.0.11": {
+        "dependencies": {
+          "Microsoft.Extensions.Http": "9.0.11",
+          "Polly": "8.6.5",
+          "Polly.Extensions.Http": "3.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Extensions.Http.Polly.dll": {
+            "assemblyVersion": "9.0.11.0",
+            "fileVersion": "9.0.1125.52006"
           }
         }
       },
@@ -679,6 +758,21 @@
         },
         "runtime": {
           "lib/net9.0/Microsoft.Extensions.Options.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.1125.51716"
+          }
+        }
+      },
+      "Microsoft.Extensions.Options.ConfigurationExtensions/9.0.11": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "9.0.11",
+          "Microsoft.Extensions.Configuration.Binder": "9.0.11",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.11",
+          "Microsoft.Extensions.Options": "9.0.11",
+          "Microsoft.Extensions.Primitives": "9.0.11"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.Extensions.Options.ConfigurationExtensions.dll": {
             "assemblyVersion": "9.0.0.0",
             "fileVersion": "9.0.1125.51716"
           }
@@ -750,6 +844,36 @@
           "lib/net6.0/Mono.TextTemplating.dll": {
             "assemblyVersion": "3.0.0.0",
             "fileVersion": "3.0.0.1"
+          }
+        }
+      },
+      "Polly/8.6.5": {
+        "dependencies": {
+          "Polly.Core": "8.6.5"
+        },
+        "runtime": {
+          "lib/net6.0/Polly.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.6.5.5194"
+          }
+        }
+      },
+      "Polly.Core/8.6.5": {
+        "runtime": {
+          "lib/net8.0/Polly.Core.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.6.5.5194"
+          }
+        }
+      },
+      "Polly.Extensions.Http/3.0.0": {
+        "dependencies": {
+          "Polly": "8.6.5"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Polly.Extensions.Http.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.0.0.0"
           }
         }
       },
@@ -992,7 +1116,8 @@
           "Mapster": "7.4.2-pre02",
           "Mapster.DependencyInjection": "1.0.3-pre02",
           "MediatR": "13.1.0",
-          "Persistence": "1.0.0"
+          "Persistence": "1.0.0",
+          "Polly": "8.6.5"
         },
         "runtime": {
           "Application.dll": {
@@ -1266,12 +1391,26 @@
       "path": "microsoft.extensions.caching.memory/9.0.11",
       "hashPath": "microsoft.extensions.caching.memory.9.0.11.nupkg.sha512"
     },
+    "Microsoft.Extensions.Configuration/9.0.11": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-4ceMQRCIMP9AxxZOQ0k+xYXCfgSEmEsnt6s0o/KkpeLqwm3kGKBbsiJlyMk56GnKJtk4SI7nTpIIzb+Qdk+FMQ==",
+      "path": "microsoft.extensions.configuration/9.0.11",
+      "hashPath": "microsoft.extensions.configuration.9.0.11.nupkg.sha512"
+    },
     "Microsoft.Extensions.Configuration.Abstractions/9.0.11": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-g23//mPpMa33QdJkLujJICoCRbiLFpiQ4XbROG9JdeDI6/sM+qZPB2t5SmUWNM8GwY8dYW3NucxlZDFe8s3NAQ==",
       "path": "microsoft.extensions.configuration.abstractions/9.0.11",
       "hashPath": "microsoft.extensions.configuration.abstractions.9.0.11.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Configuration.Binder/9.0.11": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-iPE1jROL5uK/6iJSRzwpEIJt6BuANN36Io+6bLss67JVjbG6DdVedrMnB9nqsxs+Lx3X9RxvARTgFsUgP0MB0g==",
+      "path": "microsoft.extensions.configuration.binder/9.0.11",
+      "hashPath": "microsoft.extensions.configuration.binder.9.0.11.nupkg.sha512"
     },
     "Microsoft.Extensions.DependencyInjection/9.0.11": {
       "type": "package",
@@ -1293,6 +1432,34 @@
       "sha512": "sha512-qCIWxEPt6Y9Z/Vx2R6JsfX7pwxIHC2GYlkcFbTox3MpsiNexyLkvPFTNsfmAaKpjTZ6FhNmvY3BdrwLX4+X0cQ==",
       "path": "microsoft.extensions.dependencymodel/9.0.10",
       "hashPath": "microsoft.extensions.dependencymodel.9.0.10.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Diagnostics/9.0.11": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WkriTCwxW0QbIgPYXGy329wQKcS4lmstwwysCHcjok2acPd626ysPcwMpw1pSBNzkdkMsqcbcJLlpVc9kP/YiQ==",
+      "path": "microsoft.extensions.diagnostics/9.0.11",
+      "hashPath": "microsoft.extensions.diagnostics.9.0.11.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Diagnostics.Abstractions/9.0.11": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-D9gu4weEmvWGuz8zp5xwsOr0ldmWphMKr7+IW66hG4rnrgpMLtTWoOINBOX5mcRTPL39+AVd3BJdc4HTvl2NrA==",
+      "path": "microsoft.extensions.diagnostics.abstractions/9.0.11",
+      "hashPath": "microsoft.extensions.diagnostics.abstractions.9.0.11.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Http/9.0.11": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-QEa12ESaPAKR3M40N8dawVd+LPOgxCrGsUmC7Myfhn44AQiWh7X9PiTAagrAnJSaGqsb+yx+KRNSjrm8wx1TVQ==",
+      "path": "microsoft.extensions.http/9.0.11",
+      "hashPath": "microsoft.extensions.http.9.0.11.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Http.Polly/9.0.11": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-NzOXRKQwW+UAmKMmT2JnISUtdzcE6PStOwOyqBzh8LzrwyibYRze7KEFCdZBySHIR1zl2fIbN+LOb5htj4+Qrg==",
+      "path": "microsoft.extensions.http.polly/9.0.11",
+      "hashPath": "microsoft.extensions.http.polly.9.0.11.nupkg.sha512"
     },
     "Microsoft.Extensions.Identity.Core/9.0.11": {
       "type": "package",
@@ -1328,6 +1495,13 @@
       "sha512": "sha512-HX4M3BLkW1dtByMKHDVq6r7Jy6e4hf8NDzHpIgz7C8BtYk9JQHhfYX5c1UheQTD5Veg1yBhz/cD9C8vtrGrk9w==",
       "path": "microsoft.extensions.options/9.0.11",
       "hashPath": "microsoft.extensions.options.9.0.11.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Options.ConfigurationExtensions/9.0.11": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HUzr4c1eMXCQN8Yre2JdCzYmLJAecFGVXfByVhjEY4jBaHIs8EAxdv72WMUa2GcROlkYPbYNzMbcqJPMiznHxw==",
+      "path": "microsoft.extensions.options.configurationextensions/9.0.11",
+      "hashPath": "microsoft.extensions.options.configurationextensions.9.0.11.nupkg.sha512"
     },
     "Microsoft.Extensions.Primitives/9.0.11": {
       "type": "package",
@@ -1377,6 +1551,27 @@
       "sha512": "sha512-YqueG52R/Xej4VVbKuRIodjiAhV0HR/XVbLbNrJhCZnzjnSjgMJ/dCdV0akQQxavX6hp/LC6rqLGLcXeQYU7XA==",
       "path": "mono.texttemplating/3.0.0",
       "hashPath": "mono.texttemplating.3.0.0.nupkg.sha512"
+    },
+    "Polly/8.6.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-VqtW2ZE/ALvQMAH1cQY3qZ2cF2OXa3oe/HKMdOv6Q02HCoEW0rsFNfcBONXlHBe1TnjWW1vdRxBEkPeq0/2FHA==",
+      "path": "polly/8.6.5",
+      "hashPath": "polly.8.6.5.nupkg.sha512"
+    },
+    "Polly.Core/8.6.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-t+sUVrIwvo7UmsgHGgOG9F0GDZSRIm47u2ylH17Gvcv1q5hNEwgD5GoBlFyc0kh/pebmPyrAgvGsR/65ZBaXlg==",
+      "path": "polly.core/8.6.5",
+      "hashPath": "polly.core.8.6.5.nupkg.sha512"
+    },
+    "Polly.Extensions.Http/3.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-drrG+hB3pYFY7w1c3BD+lSGYvH2oIclH8GRSehgfyP5kjnFnHKQuuBhuHLv+PWyFuaTDyk/vfRpnxOzd11+J8g==",
+      "path": "polly.extensions.http/3.0.0",
+      "hashPath": "polly.extensions.http.3.0.0.nupkg.sha512"
     },
     "SQLitePCLRaw.bundle_e_sqlite3/2.1.10": {
       "type": "package",

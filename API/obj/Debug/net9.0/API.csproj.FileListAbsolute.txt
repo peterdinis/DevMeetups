@@ -177,3 +177,13 @@
 /home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 /home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Microsoft.Extensions.Identity.Core.dll
 /home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Microsoft.Extensions.Identity.Stores.dll
+/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Microsoft.Extensions.Configuration.dll
+/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Microsoft.Extensions.Configuration.Binder.dll
+/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Microsoft.Extensions.Diagnostics.dll
+/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Microsoft.Extensions.Diagnostics.Abstractions.dll
+/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Microsoft.Extensions.Http.dll
+/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Microsoft.Extensions.Http.Polly.dll
+/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Microsoft.Extensions.Options.ConfigurationExtensions.dll
+/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Polly.dll
+/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Polly.Core.dll
+/home/peterdinis/Desktop/CV/csharp-apps/devmeetups/API/bin/Debug/net9.0/Polly.Extensions.Http.dll
