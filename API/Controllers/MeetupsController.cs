@@ -21,12 +21,18 @@ namespace API.Controllers
         private readonly ILogger<MeetupsController> _logger;
         private readonly AsyncPolicy _resiliencyPolicy;
 
+        private readonly SearchMeetupsHandler _searchMeetupsHandler;
+
+        private readonly FilterMeetupsHandler _filterMeetupHandler;
+
         public MeetupsController(
             GetMeetupListHandler getMeetupListHandler,
             GetMeetupDetailsHandler getMeetupDetailsHandler,
             CreateMeetupHandler createMeetupHandler,
             EditMeetupHandler editMeetupHandler,
             DeleteMeetupHandler deleteMeetupHandler,
+            SearchMeetupsHandler searchMeetupsHandler,
+            FilterMeetupsHandler filterMeetupsHandler,
             ILogger<MeetupsController> logger)
         {
             _getMeetupListHandler = getMeetupListHandler;
@@ -35,7 +41,7 @@ namespace API.Controllers
             _editMeetupHandler = editMeetupHandler;
             _deleteMeetupHandler = deleteMeetupHandler;
             _logger = logger;
-            
+             _searchMeetupsHandler = searchMeetupsHandler;
             _resiliencyPolicy = CreateResiliencyPolicy();
         }
 
@@ -244,6 +250,120 @@ namespace API.Controllers
                 return StatusCode(500, new { error = "An error occurred while deleting the meetup." });
             }
         }
+
+        [AllowAnonymous]
+        [HttpGet("search")]
+        public async Task<ActionResult<SearchMeetupsResult>> SearchMeetups(
+            [FromQuery] string? searchTerm,
+            [FromQuery] string? category,
+            [FromQuery] string? city,
+            [FromQuery] DateTime? fromDate,
+            [FromQuery] DateTime? toDate,
+            [FromQuery] bool? includeCancelled,
+            [FromQuery] double? latitude,
+            [FromQuery] double? longitude,
+            [FromQuery] double? radiusInKm,
+            [FromQuery] string? sortBy,
+            [FromQuery] bool? sortDescending,
+            [FromQuery] int? pageNumber,
+            [FromQuery] int? pageSize)
+        {
+            try
+            {
+                var query = new SearchMeetupsQuery
+                {
+                    SearchTerm = searchTerm,
+                    Category = category,
+                    City = city,
+                    FromDate = fromDate,
+                    ToDate = toDate,
+                    IncludeCancelled = includeCancelled,
+                    Latitude = latitude,
+                    Longitude = longitude,
+                    RadiusInKm = radiusInKm,
+                    SortBy = sortBy ?? "date",
+                    SortDescending = sortDescending ?? false,
+                    PageNumber = pageNumber ?? 1,
+                    PageSize = Math.Min(pageSize ?? 20, 100) // Max 100 per page
+                };
+
+                var result = await _resiliencyPolicy.ExecuteAsync(async () =>
+                {
+                    return await _searchMeetupsHandler.Handle(query);
+                });
+
+                if (result.IsSuccess)
+                {
+                    return Ok(result.Value);
+                }
+
+                return MapErrorToActionResult(result.Error);
+            }
+            catch (TimeoutRejectedException)
+            {
+                _logger.LogWarning("Timeout occurred while searching meetups");
+                return StatusCode(408, new { error = "Request timeout. Please try again." });
+            }
+            catch (BrokenCircuitException)
+            {
+                _logger.LogError("Circuit breaker open while searching meetups");
+                return StatusCode(503, new { error = "Service temporarily unavailable. Please try again later." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while searching meetups");
+                return StatusCode(500, new { error = "An error occurred while searching meetups." });
+            }
+        }
+
+        [AllowAnonymous]
+[HttpGet("filter")]
+public async Task<ActionResult<FilterMeetupsResult>> FilterMeetups(
+    [FromQuery] List<string>? categories,
+    [FromQuery] List<string>? cities,
+    [FromQuery] DateTime? fromDate,
+    [FromQuery] DateTime? toDate,
+    [FromQuery] bool? includeCancelled,
+    [FromQuery] bool? onlyUpcoming,
+    [FromQuery] bool? onlyPast,
+    [FromQuery] string? sortBy,
+    [FromQuery] bool? sortDescending,
+    [FromQuery] int? pageNumber,
+    [FromQuery] int? pageSize)
+{
+    try
+    {
+        var query = new FilterMeetupsQuery
+        {
+            Categories = categories,
+            Cities = cities,
+            FromDate = fromDate,
+            ToDate = toDate,
+            IncludeCancelled = includeCancelled,
+            OnlyUpcoming = onlyUpcoming,
+            OnlyPast = onlyPast,
+            SortBy = sortBy ?? "date",
+            SortDescending = sortDescending ?? false,
+            PageNumber = pageNumber ?? 1,
+            PageSize = Math.Min(pageSize ?? 20, 100)
+        };
+
+        var result = await _resiliencyPolicy.ExecuteAsync(async () => 
+            await _filterMeetupHandler.Handle(query));
+
+        return result.IsSuccess ? Ok(result.Value) : MapErrorToActionResult(result.Error);
+    }
+    catch (Exception ex) when (ex is TimeoutRejectedException or BrokenCircuitException)
+    {
+        _logger.LogError(ex, "Resiliency policy triggered for filter endpoint");
+        return ex switch
+        {
+            TimeoutRejectedException => StatusCode(408, new { error = "Request timeout" }),
+            BrokenCircuitException => StatusCode(503, new { error = "Service unavailable" }),
+            _ => StatusCode(500, new { error = "Internal server error" })
+        };
+    }
+}
 
         private ActionResult MapErrorToActionResult(string error)
         {
