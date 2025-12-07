@@ -76,7 +76,7 @@ const Navigation: FC = () => {
 						<Flex align="center" gap={2}>
 							<Icon as={Users} w={6} h={6} color="blue.500" />
 							<Text fontSize="2xl" fontWeight="bold" color={textColor}>
-								DevMeet
+								<Link to="/">Devmeet</Link>
 							</Text>
 						</Flex>
 					</Flex>
