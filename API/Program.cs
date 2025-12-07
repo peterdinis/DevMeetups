@@ -67,6 +67,7 @@ builder.Services.AddScoped<Application.Meetups.Commands.EditMeetupHandler>();
 builder.Services.AddScoped<Application.Meetups.Queries.GetMeetupDetailsHandler>();
 builder.Services.AddScoped<Application.Meetups.Queries.GetMeetupListHandler>();
 builder.Services.AddScoped<Application.Meetups.Queries.SearchMeetupsHandler>();
+builder.Services.AddScoped<Application.Meetups.Queries.FilterMeetupsHandler>();
 
 builder.Services.AddMapster();
 
