@@ -1,17 +1,17 @@
-import { createRoute } from '@tanstack/react-router'
-import { rootRoute } from './__root'
-import { RegisterForm } from '../components/auth/RegisterForm'
+import { createRoute } from "@tanstack/react-router";
+import { rootRoute } from "./__root";
+import { RegisterForm } from "../components/auth/RegisterForm";
 
 function Register() {
-  return (
-    <>
-      <RegisterForm />
-    </>
-  )
+	return (
+		<>
+			<RegisterForm />
+		</>
+	);
 }
 
 export const registerRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/register',
-  component: Register,
-})
+	getParentRoute: () => rootRoute,
+	path: "/register",
+	component: Register,
+});
