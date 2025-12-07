@@ -1,29 +1,29 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { tanstackRouter } from '@tanstack/router-plugin/vite'
-import tsconfigPaths from "vite-tsconfig-paths"
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 // https://vite.dev/config/
 export default defineConfig({
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5129',
-        changeOrigin: true,
-        secure: false,
-      },
-    },
-  },
-  plugins: [
-    tanstackRouter({
-      target: 'react',
-      autoCodeSplitting: true,
-    }),
-    tsconfigPaths(),
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler']],
-      },
-    }),
-  ],
-})
+	server: {
+		proxy: {
+			"/api": {
+				target: "http://localhost:5129",
+				changeOrigin: true,
+				secure: false,
+			},
+		},
+	},
+	plugins: [
+		tanstackRouter({
+			target: "react",
+			autoCodeSplitting: true,
+		}),
+		tsconfigPaths(),
+		react({
+			babel: {
+				plugins: [["babel-plugin-react-compiler"]],
+			},
+		}),
+	],
+});

@@ -1,17 +1,17 @@
-import { createRoute } from '@tanstack/react-router'
-import { rootRoute } from './__root'
-import HomeWrapper from '../components/home/HomeWrapper'
+import { createRoute } from "@tanstack/react-router";
+import { rootRoute } from "./__root";
+import HomeWrapper from "../components/home/HomeWrapper";
 
 function Index() {
-  return (
-    <>
-      <HomeWrapper />
-    </>
-  )
+	return (
+		<>
+			<HomeWrapper />
+		</>
+	);
 }
 
 export const indexRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/',
-  component: Index,
-})
+	getParentRoute: () => rootRoute,
+	path: "/",
+	component: Index,
+});
